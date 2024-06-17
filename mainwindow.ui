@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>ArcadePlayground</class>
+ <widget class="QMainWindow" name="ArcadePlayground">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="TicTacToeButton">
     <property name="geometry">
      <rect>
-      <x>119</x>
-      <y>264</y>
+      <x>90</x>
+      <y>410</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>260</y>
+      <x>610</x>
+      <y>520</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -51,6 +51,9 @@
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
