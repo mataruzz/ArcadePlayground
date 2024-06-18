@@ -32,7 +32,18 @@ MainWindow::MainWindow(QWidget *parent)
     // Connecting signals
     connect(tic_tac_toe_widget_, &TicTacToe::goBackToMainMenu, this, &MainWindow::showMainFromTicTacToe);
 
+    // Connect the signal to the slot to resize the main window
+    // connect(stacked_widget_, &QStackedWidget::currentChanged, this, &MainWindow::resizeMainWindow);
+
 }
+// void MainWindow::resizeMainWindow() {
+//     // Get the current widget
+//     QWidget *currentWidget = stacked_widget_->currentWidget();
+//     if (currentWidget) {
+//         // Resize the main window to fit the current widget
+//         resize(currentWidget->size());
+//     }
+// }
 
 void MainWindow::showTicTacToe(){
     stacked_widget_->setCurrentWidget(tic_tac_toe_widget_);

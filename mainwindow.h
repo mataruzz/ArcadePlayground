@@ -26,6 +26,7 @@ public:
 private slots:
     void showTicTacToe();
     void showMainFromTicTacToe();
+    // void resizeMainWindow();
 
 private:
     Ui::ArcadePlayground *ui;

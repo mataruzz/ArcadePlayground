@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>Images/TicTacToe/o_icon.png</file>
         <file>Images/TicTacToe/x_icon.png</file>
+        <file>Images/TicTacToe/tic_tac_toe_game.png</file>
     </qresource>
 </RCC>
