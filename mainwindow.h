@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QStackedWidget>
+// #include <QWidget>
+#include <QHBoxLayout>
 
 #include "TicTacToe/tictactoe.h"
 
@@ -31,8 +33,11 @@ private slots:
 private:
     Ui::ArcadePlayground *ui;
 
+    QSize original_main_window_size_;
+
     // Buttons
     QPushButton *tic_tac_toe_button_;
+
 
     // Widgets
     TicTacToe *tic_tac_toe_widget_;

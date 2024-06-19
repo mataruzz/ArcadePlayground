@@ -26,30 +26,29 @@ MainWindow::MainWindow(QWidget *parent)
     // Linking button with the designed one
     tic_tac_toe_button_ = ui->TicTacToeButton;
 
+    original_main_window_size_ = this->size();
+    setFixedSize(original_main_window_size_);
+
     // Connecting button signal to appropriate slot
     connect(tic_tac_toe_button_, &QPushButton::clicked, this, &MainWindow::showTicTacToe);
 
     // Connecting signals
     connect(tic_tac_toe_widget_, &TicTacToe::goBackToMainMenu, this, &MainWindow::showMainFromTicTacToe);
 
-    // Connect the signal to the slot to resize the main window
-    // connect(stacked_widget_, &QStackedWidget::currentChanged, this, &MainWindow::resizeMainWindow);
-
 }
-// void MainWindow::resizeMainWindow() {
-//     // Get the current widget
-//     QWidget *currentWidget = stacked_widget_->currentWidget();
-//     if (currentWidget) {
-//         // Resize the main window to fit the current widget
-//         resize(currentWidget->size());
-//     }
-// }
+
 
 void MainWindow::showTicTacToe(){
     stacked_widget_->setCurrentWidget(tic_tac_toe_widget_);
+    QSize tic_tac_toe_widget_size = tic_tac_toe_widget_->getWidgetSize();
+    // resize(tic_tac_toe_widget_size);
+    setFixedSize(tic_tac_toe_widget_size);
+
 }
 
 void MainWindow::showMainFromTicTacToe(){
     stacked_widget_->setCurrentIndex(0);
+    setFixedSize(original_main_window_size_);
 }
+
 

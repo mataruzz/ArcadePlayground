@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>636</width>
-    <height>431</height>
+    <width>405</width>
+    <height>357</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Arcade Playground</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton_2">
@@ -20,9 +20,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>350</y>
-      <width>171</width>
+      <x>130</x>
+      <y>280</y>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
@@ -39,20 +39,26 @@
      <bool>false</bool>
     </property>
     <property name="flat">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>20</x>
       <y>20</y>
-      <width>401</width>
+      <width>361</width>
       <height>41</height>
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Box</enum>
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -71,8 +77,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>120</y>
+      <x>140</x>
+      <y>80</y>
       <width>121</width>
       <height>161</height>
      </rect>
@@ -89,60 +95,62 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QPushButton" name="TicTacToeButton">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>120</y>
-       <width>81</width>
-       <height>31</height>
-      </rect>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+     <property name="spacing">
+      <number>17</number>
      </property>
-     <property name="text">
-      <string>Tic Tac Toe</string>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <property name="iconSize">
-      <size>
-       <width>40</width>
-       <height>40</height>
-      </size>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>81</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="resources.qrc">:/Images/TicTacToe/tic_tac_toe_game.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resources.qrc">:/Images/TicTacToe/tic_tac_toe_game.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="TicTacToeButton">
+       <property name="text">
+        <string>Tic Tac Toe</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <zorder>frame</zorder>
    <zorder>pushButton_2</zorder>
    <zorder>textEdit</zorder>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>636</width>
+     <width>405</width>
      <height>22</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="resources.qrc"/>
