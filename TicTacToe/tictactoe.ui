@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>447</height>
+    <width>538</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -19,11 +19,14 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
   <widget class="QPushButton" name="goBackButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>60</y>
+     <x>30</x>
+     <y>50</y>
      <width>80</width>
      <height>25</height>
     </rect>
@@ -38,7 +41,7 @@
   <widget class="QPushButton" name="left_top">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>100</y>
      <width>60</width>
      <height>60</height>
@@ -60,7 +63,7 @@
   <widget class="QPushButton" name="center_top">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>230</x>
      <y>100</y>
      <width>60</width>
      <height>60</height>
@@ -76,7 +79,7 @@
   <widget class="QPushButton" name="right_top">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>300</x>
      <y>100</y>
      <width>60</width>
      <height>60</height>
@@ -92,7 +95,7 @@
   <widget class="QPushButton" name="right_center">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>300</x>
      <y>170</y>
      <width>60</width>
      <height>60</height>
@@ -108,7 +111,7 @@
   <widget class="QPushButton" name="left_center">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>170</y>
      <width>60</width>
      <height>60</height>
@@ -124,7 +127,7 @@
   <widget class="QPushButton" name="center_center">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>230</x>
      <y>170</y>
      <width>60</width>
      <height>60</height>
@@ -140,7 +143,7 @@
   <widget class="QPushButton" name="center_bottom">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>230</x>
      <y>240</y>
      <width>60</width>
      <height>60</height>
@@ -156,7 +159,7 @@
   <widget class="QPushButton" name="right_bottom">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>300</x>
      <y>240</y>
      <width>60</width>
      <height>60</height>
@@ -181,7 +184,7 @@
   <widget class="QPushButton" name="left_bottom">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>240</y>
      <width>60</width>
      <height>60</height>
@@ -197,7 +200,7 @@
   <widget class="Line" name="vline_left">
    <property name="geometry">
     <rect>
-     <x>184</x>
+     <x>214</x>
      <y>100</y>
      <width>20</width>
      <height>201</height>
@@ -213,7 +216,7 @@
   <widget class="Line" name="vline_right">
    <property name="geometry">
     <rect>
-     <x>257</x>
+     <x>287</x>
      <y>100</y>
      <width>16</width>
      <height>201</height>
@@ -229,7 +232,7 @@
   <widget class="Line" name="hline_bottom">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>224</y>
      <width>201</width>
      <height>20</height>
@@ -245,7 +248,7 @@
   <widget class="Line" name="hline_up">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>156</y>
      <width>201</width>
      <height>16</height>
@@ -264,7 +267,7 @@
   <widget class="Line" name="line">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>150</x>
      <y>300</y>
      <width>221</width>
      <height>20</height>
@@ -277,7 +280,7 @@
   <widget class="Line" name="line_2">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>150</x>
      <y>80</y>
      <width>221</width>
      <height>20</height>
@@ -290,7 +293,7 @@
   <widget class="Line" name="line_3">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>360</x>
      <y>90</y>
      <width>20</width>
      <height>221</height>
@@ -303,7 +306,7 @@
   <widget class="Line" name="line_4">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>140</x>
      <y>90</y>
      <width>20</width>
      <height>221</height>
@@ -316,8 +319,8 @@
   <widget class="QPushButton" name="resetBoardButton">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>360</y>
+     <x>400</x>
+     <y>320</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -337,7 +340,7 @@
   <widget class="QLCDNumber" name="lcdPlayer">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>130</y>
      <width>71</width>
      <height>51</height>
@@ -356,7 +359,7 @@
   <widget class="QLCDNumber" name="lcdComputer">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>220</y>
      <width>71</width>
      <height>51</height>
@@ -375,7 +378,7 @@
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>420</x>
      <y>180</y>
      <width>51</width>
      <height>51</height>
@@ -401,7 +404,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QTextBrowser" name="textBrowser_3">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>270</y>
      <width>71</width>
      <height>31</height>
@@ -427,9 +430,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QTextBrowser" name="textBrowser_4">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>110</y>
-     <width>71</width>
+     <width>61</width>
      <height>31</height>
     </rect>
    </property>
@@ -453,7 +456,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QPushButton" name="resetScoreButton">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>390</x>
      <y>60</y>
      <width>111</width>
      <height>25</height>
@@ -481,7 +484,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QTextEdit" name="titleFrame">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>170</x>
      <y>10</y>
      <width>171</width>
      <height>51</height>
@@ -510,7 +513,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QTextEdit" name="outboardFrame">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>150</x>
      <y>320</y>
      <width>221</width>
      <height>71</height>
@@ -539,11 +542,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <widget class="QTextEdit" name="commentFrame">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>350</y>
      <width>201</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="autoFillBackground">
     <bool>false</bool>
@@ -561,16 +569,16 @@ p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="changeIconButton">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>320</y>
-     <width>91</width>
+     <x>27</x>
+     <y>235</y>
+     <width>101</width>
      <height>25</height>
     </rect>
    </property>
@@ -596,6 +604,78 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
    <property name="default">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>47</x>
+     <y>150</y>
+     <width>54</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>You</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="playerIconLabel">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>190</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="levelComboBox">
+   <property name="geometry">
+    <rect>
+     <x>411</x>
+     <y>360</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <underline>false</underline>
+     <stylestrategy>PreferDefault</stylestrategy>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="editable">
+    <bool>false</bool>
+   </property>
+   <property name="currentText">
+    <string/>
    </property>
   </widget>
   <zorder>textBrowser_3</zorder>
@@ -627,6 +707,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <zorder>outboardFrame</zorder>
   <zorder>commentFrame</zorder>
   <zorder>changeIconButton</zorder>
+  <zorder>label</zorder>
+  <zorder>playerIconLabel</zorder>
+  <zorder>levelComboBox</zorder>
  </widget>
  <resources/>
  <connections/>

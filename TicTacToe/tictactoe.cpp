@@ -11,20 +11,22 @@ TicTacToe::TicTacToe(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TicTacToe)
     , change_icon_dialog_(this)
-    // , original_widget_size_(this->size())
     , score_player_(0)
     , score_computer_(0)
+    , easy_randomness_(true)
 
 {
     ui->setupUi(this);
 
     original_widget_size_ = this->size();
-    // change_icon_dialog_. = new QDialog(this);
 
     front_button_names_ = {{"left"}, {"center"}, {"right"}};
     back_button_names_ = {{"top"}, {"center"}, {"bottom"}};
 
-    player_icon_ = 'O';
+    player_icon_char_ = 'O';
+    player_icon_label_  = ui->playerIconLabel;
+
+    starter_player_ = computer_icon_char_;
 
     // Buttons and ui objects
     go_back_button_ = ui->goBackButton;
@@ -37,14 +39,19 @@ TicTacToe::TicTacToe(QWidget *parent)
 
     comment_frame_ = ui->commentFrame;
 
+    level_combo_box_ = ui->levelComboBox;
+
     initializeBoard();
     initializeChangeIconDialog();
+    initializeLevelComboBox();
 
     // Button connections
     connect(go_back_button_, &QPushButton::released, this, &TicTacToe::onGoBackButtonClicked);
     connect(reset_board_button_, &QPushButton::released, this, &TicTacToe::handleResetBoardClicked);
     connect(reset_score_button_, &QPushButton::released, this, &TicTacToe::handleResetScoreClicked);
     connect(change_icon_button_, &QPushButton::released, this, &TicTacToe::handleChangeIconClicked);
+
+    connect(level_combo_box_, &QComboBox::activated, this, &TicTacToe::handleChangeLevelBox);
 }
 
 /**
@@ -52,10 +59,16 @@ TicTacToe::TicTacToe(QWidget *parent)
  */
 void TicTacToe::initializeBoard(){
 
-    player_icon_ == 'O' ? computer_icon_ = 'X' : computer_icon_ = 'O';
+    player_icon_char_ == 'O' ? computer_icon_char_ = 'X' : computer_icon_char_ = 'O';
 
     // Update different icons
+    comment_frame_->setText("");
+    comment_frame_->setAlignment(Qt::AlignCenter);
+
     initializeIcons();
+    updatePlayerIconLabel();
+
+    reset_board_button_->setText("Reset Board");
 
     // Resetting variables
     board_ = QVector<QVector<char>>(3, QVector<char>(3, ' '));
@@ -76,8 +89,16 @@ void TicTacToe::initializeBoard(){
             row.append(button);
         }
         board_buttons_.append(row);
-
     }
+
+    /*
+     * NOT WORKING
+     */
+    // Deciding who is starting the game
+    // if(starter_player_ != player_icon_char_){
+    //     QTimer::singleShot(1000, this, SLOT(performBotAction()));
+    // }
+
 
 }
 
@@ -98,13 +119,17 @@ void TicTacToe::initializeIcons(){
     o_icon_ = QIcon(o_black_icon_path_);
     o_icon_.addPixmap(QPixmap(o_black_icon_path_), QIcon::Disabled);
 
-    if(player_icon_ == 'O'){
+    if(player_icon_char_ == 'O'){
+        player_icon_ = o_icon_;
+        computer_icon_ = x_icon_;
         player_winning_icon_ = QIcon(o_green_icon_path_);
         player_winning_icon_.addPixmap(QPixmap(o_green_icon_path_), QIcon::Disabled);
 
         computer_winning_icon_ = QIcon(x_red_icon_path_);
         computer_winning_icon_.addPixmap(QPixmap(x_red_icon_path_), QIcon::Disabled);
     }else{
+        player_icon_ = x_icon_;
+        computer_icon_ = o_icon_;
         player_winning_icon_ = QIcon(x_green_icon_path_);
         player_winning_icon_.addPixmap(QPixmap(x_green_icon_path_), QIcon::Disabled);
 
@@ -146,12 +171,23 @@ void TicTacToe::initializeChangeIconDialog(){
     connect(cross_button, &QPushButton::clicked, this, &TicTacToe::changeIconCross);
 }
 
+void TicTacToe::initializeLevelComboBox(){
+    QFont font;
+    font.setPointSize(8);
+
+    level_combo_box_->addItem("Easy");
+    level_combo_box_->addItem("Medium");
+    level_combo_box_->addItem("Hard");
+    level_combo_box_->setFont(font);
+    level_combo_box_->setCurrentIndex(1);
+    game_level_ = static_cast<gameLevel>(level_combo_box_->currentIndex());
+}
+
 void TicTacToe::onGoBackButtonClicked(){
     emit goBackToMainMenu();
 }
 
 void TicTacToe::handleResetBoardClicked(){
-    std::cout << "Resetting board" << std::endl;
     initializeBoard();
     reset_board_button_->setDefault(false);
 }
@@ -166,16 +202,27 @@ void TicTacToe::handleChangeIconClicked(){
 }
 
 void TicTacToe::changeIconCircle(){
-    player_icon_ = 'O';
+    player_icon_char_ = 'O';
+    player_icon_ = o_icon_;
+    computer_icon_ = x_icon_;
     initializeBoard();
     change_icon_dialog_.close();
+    updatePlayerIconLabel();
 }
 
 void TicTacToe::changeIconCross(){
-    player_icon_ = 'X';
+    player_icon_char_ = 'X';
+    player_icon_ = x_icon_;
+    computer_icon_ = o_icon_;
     initializeBoard();
     change_icon_dialog_.close();
+    updatePlayerIconLabel();
+}
 
+
+void  TicTacToe::handleChangeLevelBox(){
+    game_level_ = static_cast<gameLevel>(level_combo_box_->currentIndex());
+    initializeBoard();
 }
 
 /**
@@ -198,32 +245,30 @@ void TicTacToe::handleBoardButtonClick(){
     }
 
     // Check if the cell is empty and fill with proper icon
-
-    /*
-     * Below code reused below. Better to implement a fucntion
-     */
     if (row != -1 && col != -1 && board_[row][col] == ' ') {
-        board_[row][col] = player_icon_;
-        button->setIcon(player_icon_ == 'O' ? o_icon_ : x_icon_);
-
-        QSize icon_size(button->width(), button->height());
-        button->setIconSize(icon_size);
-        disableButton(button);
+        board_[row][col] = player_icon_char_;
+        markButtonWithIcon(button, player_icon_);
         free_spots_.erase(idxsToSpot(row,col));
 
 
         // Player action
         gameState player_icon_status, robot_status;
-        player_icon_status = checkGameStateForPlayer(player_icon_);
-        handlePlayerAction(player_icon_status, player_icon_);
+        player_icon_status = checkGameStateForPlayer(player_icon_char_);
+        handlePlayerAction(player_icon_status, player_icon_char_);
 
         // Bot action
         if (player_icon_status != gameState::won && player_icon_status != gameState::draw){
-            randomBotAction(computer_icon_);
-            robot_status = checkGameStateForPlayer(computer_icon_);
-            handlePlayerAction(robot_status, computer_icon_);
+            botActionBasedOnLevel();
+            robot_status = checkGameStateForPlayer(computer_icon_char_);
+            handlePlayerAction(robot_status, computer_icon_char_);
         }
     }
+}
+
+void TicTacToe::markButtonWithIcon(QPushButton *button, QIcon icon){
+    button->setIcon(icon);
+    button->setIconSize(button->size());
+    disableButton(button);
 }
 
 void TicTacToe::updateLcdScores(){
@@ -239,7 +284,10 @@ void TicTacToe::resetLcdScores(){
     lcd_player_->display(zero);
 }
 
-void TicTacToe::randomBotAction(const char player){
+/*
+ * passing char player not used. Store directly computer icon as for the player icon
+ */
+void TicTacToe::randomBotAction(){
     if(free_spots_.empty())
         return;
 
@@ -251,33 +299,207 @@ void TicTacToe::randomBotAction(const char player){
     std::pair<qint8, qint8> idxs = spotToIdxs(el);
     qint8 row = idxs.first;
     qint8 col = idxs.second;
-    board_[row][col] = player ;
+    board_[row][col] = computer_icon_char_ ;
 
     QPushButton *button = board_buttons_[row][col];
-
-    // Disable button
-    button->setIcon(player == 'O' ? o_icon_ : x_icon_);  // Update the button text
-
-    QSize icon_size(button->width(), button->height());
-    button->setIconSize(icon_size);
-    disableButton(button);
+    QIcon icon;
+    computer_icon_char_ == 'O' ? icon = o_icon_ : icon = x_icon_;
+    markButtonWithIcon(button, icon);
     free_spots_.erase(idxsToSpot(row,col));
 
 }
 
+
+bool TicTacToe::canWinLine(const char a, const char b, const char c, const char player, QVector<qint8> &win_poses){
+    win_poses.clear();
+
+    if(a == player && b == ' ' && c == ' '){
+        win_poses.append(1);
+        win_poses.append(2);
+        return true;
+    }
+
+    if(a == ' ' && b == player && c == ' '){
+        win_poses.append(0);
+        win_poses.append(2);
+        return true;
+    }
+
+    if(a == ' ' && b == ' ' && c == player ){
+        win_poses.append(0);
+        win_poses.append(1);
+        return true;
+    }
+
+    if(a == player && b == player && c == ' '){
+        win_poses.append(2);
+        return true;
+    }
+
+    if(a == player && b == ' ' && c == player){
+        win_poses.append(1);
+        return true;
+    }
+
+    if(a == ' ' && b == player && c == player){
+        win_poses.append(0);
+        return true;
+    }
+
+    if(a == b == c && a == ' '){
+        win_poses = {0,1,2};
+        return true;
+    }
+
+    return false;
+}
+
+bool TicTacToe::canWinSingleMove(const char a, const char b, const char c, const char player, qint8 &pose){
+    QVector<qint8> poses;
+    bool can_win_line = canWinLine(a, b, c, player, poses);
+    qint8 free_spot = poses.size();
+
+    if(can_win_line && free_spot==1){
+        pose = poses.at(0);
+        return true;
+    }else{
+        pose = -1;
+        return false;
+    }
+};
+
+void TicTacToe::markComputerButton(qint8 row, qint8 col){
+    QPushButton *button = board_buttons_[row][col];
+    board_[row][col] = computer_icon_char_;
+    markButtonWithIcon(button, computer_icon_);
+    free_spots_.erase(idxsToSpot(row,col));
+}
+
+void TicTacToe::mediumBotAction(){
+    // If multiple choses, choose random
+    qint8 pose;
+    QVector<qint8> poses;
+    QVector<char> players{computer_icon_char_, player_icon_char_};
+
+    // Single spot search
+    for(auto &player: players){
+        for (qint8 i = 0; i<3; i++){
+            // ROW
+            bool can_win_single_move_row = canWinSingleMove(board_[i][0], board_[i][1], board_[i][2], player,  pose);
+            if(can_win_single_move_row){
+                markComputerButton(i, pose);
+                return;
+            }
+
+            // COLUMN
+            bool can_win_single_move_col = canWinSingleMove(board_[0][i], board_[1][i], board_[2][i], player,  pose);
+            if(can_win_single_move_col){
+                markComputerButton(pose, i);
+                return;
+            }
+        }
+        // MAIN DIAG
+        bool can_win_main_dial = canWinSingleMove(board_[0][0], board_[1][1], board_[2][2], player, pose);
+        if(can_win_main_dial){
+            markComputerButton(pose, pose);
+            return;
+        }
+
+        // SECOND DIAL
+        bool can_win_sec_dial = canWinSingleMove(board_[0][2], board_[1][1], board_[2][0], player, pose);
+        if(can_win_sec_dial){
+            markComputerButton(pose, -pose+2);
+            return;
+        }
+    }
+
+
+    // Possible winning line
+    for(auto &player : players){
+        for(qint8 i = 0; i<3; i++){
+            // ROW
+            bool can_win_on_row = canWinLine(board_[i][0], board_[i][1], board_[i][2], player, poses);
+            if(can_win_on_row){
+                std::mt19937 gen( std::random_device{}() );
+                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+                markComputerButton(i, pose);
+                return;
+            }
+
+            // COLUMN
+            bool can_win_on_col = canWinLine(board_[0][i], board_[1][i], board_[2][i], player, poses);
+            if(can_win_on_col){
+                std::mt19937 gen( std::random_device{}() );
+                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+                markComputerButton(pose, i);
+                return;
+            }
+
+            // MAIN DIAG
+            bool can_win_main_dial = canWinLine(board_[0][0], board_[1][1], board_[2][2], player, poses);
+            if(can_win_main_dial){
+                std::mt19937 gen( std::random_device{}() );
+                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+                markComputerButton(pose, pose);
+                return;
+            }
+
+            // SECOND DIAL
+            bool can_win_sec_dial = canWinLine(board_[0][2], board_[1][1], board_[2][0], player, poses);
+            if(can_win_sec_dial){
+                std::mt19937 gen( std::random_device{}() );
+                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+                markComputerButton(pose, -pose+2);
+                return;
+            }
+        }
+    }
+
+    // Random spot selection as last chance
+    randomBotAction();
+}
+
+void TicTacToe::botActionBasedOnLevel(){
+
+    switch (game_level_) {
+    case gameLevel::easy:{
+        easy_randomness_ ? randomBotAction() : mediumBotAction();
+        easy_randomness_ = !easy_randomness_;
+        break;
+    }
+    case gameLevel::medium:
+        mediumBotAction();
+        break;
+    case gameLevel::hard:
+
+        break;
+    default:
+        mediumBotAction();
+        break;
+    }
+}
+
+
 void TicTacToe::handlePlayerAction(const gameState &action_result, const char player){
     qint8 *score;
-    player == player_icon_ ? score = &score_player_ : score = &score_computer_;
+    player == player_icon_char_ ? score = &score_player_ : score = &score_computer_;
 
     switch (action_result) {
     case gameState::won:{
-        std::cout << "WON" << std::endl;
+        // std::cout << "WON" << std::endl;
         // Updating score
         *score+=1;
-        QString p((QChar(player)));
-        comment_frame_->setText(p + " WON");
+
+        // Displaying text below the game
+        if(player == player_icon_char_){
+            comment_frame_->setText("YOU WON :)");
+        }else{
+            comment_frame_->setText("YOU LOST :(");
+        }
+        comment_frame_->setAlignment(Qt::AlignCenter);
 
         reset_board_button_->setDefault(true);
+        reset_board_button_->setText("New Game");
         updateLcdScores();
 
         // Disable all the available left spots
@@ -291,20 +513,24 @@ void TicTacToe::handlePlayerAction(const gameState &action_result, const char pl
         break;
     }
     case gameState::lost:{
-        std::cout << "LOST" << std::endl;
+        // std::cout << "LOST" << std::endl;
         break;
     }
     case gameState::draw:{
-        std::cout << "DRAW" << std::endl;
+        // std::cout << "DRAW" << std::endl;
+        comment_frame_->setText("DRAW GAME");
+        comment_frame_->setAlignment(Qt::AlignCenter);
+
         reset_board_button_->setDefault(true);
+        reset_board_button_->setText("New Game");
         break;
     }
     case gameState::playing:{
-        std::cout << "PLAYING" << std::endl;
+        // std::cout << "PLAYING" << std::endl;
         break;
     }
     case gameState::error:{
-        std::cout << "ERROR" << std::endl;
+        // std::cout << "ERROR" << std::endl;
         break;
     }
     }
@@ -413,9 +639,8 @@ void TicTacToe::markWinningButtons(const QVector<std::pair<qint8, qint8>> &idxs_
         qint8 col = idxs.second;
         QIcon icon;
         QPushButton *winning_button = board_buttons_[row][col];
-        board_[row][col] == player_icon_ ? icon = player_winning_icon_ : icon = computer_winning_icon_;
-        disableButton(winning_button);
-        winning_button->setIcon(icon);
+        board_[row][col] == player_icon_char_ ? icon = player_winning_icon_ : icon = computer_winning_icon_;
+        markButtonWithIcon(winning_button, icon);
     }
 }
 
@@ -434,4 +659,16 @@ std::pair<qint8, qint8> TicTacToe::spotToIdxs(const qint8 &s){
 
 QSize TicTacToe::getWidgetSize(){
     return original_widget_size_;
+}
+
+void TicTacToe::updatePlayerIconLabel(){
+    // Converting Icon to pixmap
+    QPixmap pixmap = player_icon_.pixmap(player_icon_label_->size());
+
+    player_icon_label_->setPixmap(pixmap);
+    player_icon_label_->setScaledContents(true);
+}
+
+void TicTacToe::performBotAction(){
+    randomBotAction();
 }
