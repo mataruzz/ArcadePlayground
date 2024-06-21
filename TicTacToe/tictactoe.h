@@ -128,4 +128,5 @@ signals:
  * --- Medium/Hard (minmax algorithm)
  * - RANDOM START, NOT ALWAYS PLAYER
  * - GameState LOST never used
+ * - Gray out when draw game
  */

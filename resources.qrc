@@ -7,5 +7,6 @@
         <file>Images/TicTacToe/x_icon_black.png</file>
         <file>Images/TicTacToe/o_icon_green.png</file>
         <file>Images/TicTacToe/x_icon_green.png</file>
+        <file>Images/arcade_platform.png</file>
     </qresource>
 </RCC>
