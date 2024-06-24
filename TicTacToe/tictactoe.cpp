@@ -388,14 +388,14 @@ void TicTacToe::mediumBotAction(){
     for(auto &player: players){
         for (qint8 i = 0; i<3; i++){
             // ROW
-            bool can_win_single_move_row = canWinSingleMove(board_[i][0], board_[i][1], board_[i][2], player,  pose);
+            bool can_win_single_move_row = canWinSingleMove(board_[i][0], board_[i][1], board_[i][2], player, pose);
             if(can_win_single_move_row){
                 markComputerButton(i, pose);
                 return;
             }
 
             // COLUMN
-            bool can_win_single_move_col = canWinSingleMove(board_[0][i], board_[1][i], board_[2][i], player,  pose);
+            bool can_win_single_move_col = canWinSingleMove(board_[0][i], board_[1][i], board_[2][i], player, pose);
             if(can_win_single_move_col){
                 markComputerButton(pose, i);
                 return;
@@ -437,28 +437,27 @@ void TicTacToe::mediumBotAction(){
                 markComputerButton(pose, i);
                 return;
             }
+        }
 
-            // MAIN DIAG
-            bool can_win_main_dial = canWinLine(board_[0][0], board_[1][1], board_[2][2], player, poses);
-            if(can_win_main_dial){
-                std::mt19937 gen( std::random_device{}() );
-                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
-                markComputerButton(pose, pose);
-                return;
-            }
+        // MAIN DIAG
+        bool can_win_main_dial = canWinLine(board_[0][0], board_[1][1], board_[2][2], player, poses);
+        if(can_win_main_dial){
+            std::mt19937 gen( std::random_device{}() );
+            std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+            markComputerButton(pose, pose);
+            return;
+        }
 
-            // SECOND DIAL
-            bool can_win_sec_dial = canWinLine(board_[0][2], board_[1][1], board_[2][0], player, poses);
-            if(can_win_sec_dial){
-                std::mt19937 gen( std::random_device{}() );
-                std::sample(poses.begin(), poses.end(), &pose, 1, gen);
-                markComputerButton(pose, -pose+2);
-                return;
-            }
+        // SECOND DIAG
+        bool can_win_sec_dial = canWinLine(board_[0][2], board_[1][1], board_[2][0], player, poses);
+        if(can_win_sec_dial){
+            std::mt19937 gen( std::random_device{}() );
+            std::sample(poses.begin(), poses.end(), &pose, 1, gen);
+            markComputerButton(pose, 2-pose);
+            return;
         }
     }
 
-    std::cout << "BEFORE RANDOMBOTACTION" << std::endl;
     // Random spot selection as last chance
     randomBotAction();
 }
@@ -514,10 +513,6 @@ void TicTacToe::handlePlayerAction(const gameState &action_result, const char pl
             QPushButton *tmp_button = board_buttons_[row][col];
             disableButton(tmp_button);
         }
-        break;
-    }
-    case gameState::lost:{
-        // std::cout << "LOST" << std::endl;
         break;
     }
     case gameState::draw:{

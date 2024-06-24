@@ -23,7 +23,7 @@
 #include <algorithm>
 
 // Game states
-enum gameState{won, lost, draw, playing, error};
+enum gameState{won, draw, playing, error};
 
 enum gameLevel{easy, medium, hard};
 
@@ -63,7 +63,7 @@ private:
 
     QComboBox *level_combo_box_;
 
-    QVector<QVector<char>> board_; // parallel board filled with char
+    QVector<QVector<char>> board_;
     QVector<QVector<QPushButton*>> board_buttons_;
     QVector<QString> front_button_names_, back_button_names_;
 
@@ -101,7 +101,6 @@ private:
     void markButtonWithIcon(QPushButton *button, QIcon icon);
     void markComputerButton(qint8 row, qint8 col);
     void updatePlayerIconLabel();
-
     bool canWinLine(const char a, const char b, const char c, const char player, QVector<qint8> &win_poses);
     bool canWinSingleMove(const char a, const char b, const char c, const char player, qint8 &pose);
 
@@ -112,7 +111,6 @@ private slots:
     void changeIconCircle();
     void changeIconCross();
     void handleChangeLevelBox();
-
     void performBotAction();
 
 signals:
@@ -127,7 +125,5 @@ signals:
  * --- Dummy (dummy bot -> using simple random)
  * --- Easy (using personal bot trying to find if missing single shot to win)
  * --- Medium/Hard (minmax algorithm)
- * - RANDOM START, NOT ALWAYS PLAYER
- * - GameState LOST never used
  * - Gray out when draw game
  */
