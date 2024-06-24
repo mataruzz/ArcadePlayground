@@ -41,7 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::showTicTacToe(){
     stacked_widget_->setCurrentWidget(tic_tac_toe_widget_);
     QSize tic_tac_toe_widget_size = tic_tac_toe_widget_->getWidgetSize();
-    // resize(tic_tac_toe_widget_size);
     setFixedSize(tic_tac_toe_widget_size);
 
 }
