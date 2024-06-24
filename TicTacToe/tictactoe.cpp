@@ -52,6 +52,7 @@ TicTacToe::TicTacToe(QWidget *parent)
     connect(change_icon_button_, &QPushButton::released, this, &TicTacToe::handleChangeIconClicked);
 
     connect(level_combo_box_, &QComboBox::activated, this, &TicTacToe::handleChangeLevelBox);
+    connect(this, &TicTacToe::botTurn, this, &TicTacToe::performBotAction);
 }
 
 /**
@@ -91,15 +92,17 @@ void TicTacToe::initializeBoard(){
         board_buttons_.append(row);
     }
 
-    /*
-     * NOT WORKING
-     */
-    // Deciding who is starting the game
-    // if(starter_player_ != player_icon_char_){
-    //     QTimer::singleShot(1000, this, SLOT(performBotAction()));
-    // }
-
-
+    // Managing different player start
+    if(starter_player_ == computer_icon_char_){
+        comment_frame_->setText("BOT started");
+        comment_frame_->setAlignment(Qt::AlignCenter);
+        emit botTurn();
+        starter_player_ = player_icon_char_;
+    }else{
+        comment_frame_->setText("YOU start");
+        comment_frame_->setAlignment(Qt::AlignCenter);
+        starter_player_ = computer_icon_char_;
+    }
 }
 
 void TicTacToe::initializeIcons(){
@@ -252,15 +255,13 @@ void TicTacToe::handleBoardButtonClick(){
 
 
         // Player action
-        gameState player_icon_status, robot_status;
+        gameState player_icon_status;
         player_icon_status = checkGameStateForPlayer(player_icon_char_);
         handlePlayerAction(player_icon_status, player_icon_char_);
 
         // Bot action
         if (player_icon_status != gameState::won && player_icon_status != gameState::draw){
-            botActionBasedOnLevel();
-            robot_status = checkGameStateForPlayer(computer_icon_char_);
-            handlePlayerAction(robot_status, computer_icon_char_);
+            emit botTurn();
         }
     }
 }
@@ -291,22 +292,24 @@ void TicTacToe::randomBotAction(){
     if(free_spots_.empty())
         return;
 
+    // Random number extraction
     std::mt19937 gen( std::random_device{}() );
     qint8 el;
     std::sample(free_spots_.begin(), free_spots_.end(), &el, 1, gen);
 
     // Mark button with icon
     std::pair<qint8, qint8> idxs = spotToIdxs(el);
+
     qint8 row = idxs.first;
     qint8 col = idxs.second;
-    board_[row][col] = computer_icon_char_ ;
 
+    board_[row][col] = computer_icon_char_ ;
     QPushButton *button = board_buttons_[row][col];
+
     QIcon icon;
     computer_icon_char_ == 'O' ? icon = o_icon_ : icon = x_icon_;
     markButtonWithIcon(button, icon);
     free_spots_.erase(idxsToSpot(row,col));
-
 }
 
 
@@ -455,6 +458,7 @@ void TicTacToe::mediumBotAction(){
         }
     }
 
+    std::cout << "BEFORE RANDOMBOTACTION" << std::endl;
     // Random spot selection as last chance
     randomBotAction();
 }
@@ -471,8 +475,8 @@ void TicTacToe::botActionBasedOnLevel(){
         mediumBotAction();
         break;
     case gameLevel::hard:
-
         break;
+
     default:
         mediumBotAction();
         break;
@@ -670,5 +674,9 @@ void TicTacToe::updatePlayerIconLabel(){
 }
 
 void TicTacToe::performBotAction(){
-    randomBotAction();
+    gameState robot_status;
+
+    botActionBasedOnLevel();
+    robot_status = checkGameStateForPlayer(computer_icon_char_);
+    handlePlayerAction(robot_status, computer_icon_char_);
 }

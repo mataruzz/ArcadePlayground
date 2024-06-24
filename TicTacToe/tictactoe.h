@@ -117,6 +117,7 @@ private slots:
 
 signals:
     void goBackToMainMenu();
+    void botTurn();
 };
 
 #endif // TICTACTOE_H
