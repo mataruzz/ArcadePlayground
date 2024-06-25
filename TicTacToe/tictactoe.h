@@ -16,7 +16,6 @@
 #include <QLabel>
 #include <QTimer>
 #include <QComboBox>
-
 #include <QPainter>
 
 #include <unordered_set>
