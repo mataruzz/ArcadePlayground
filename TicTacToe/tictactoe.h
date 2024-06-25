@@ -17,6 +17,8 @@
 #include <QTimer>
 #include <QComboBox>
 
+#include <QPainter>
+
 #include <unordered_set>
 #include <iostream>
 #include <random>
@@ -103,6 +105,8 @@ private:
     void updatePlayerIconLabel();
     bool canWinLine(const char a, const char b, const char c, const char player, QVector<qint8> &win_poses);
     bool canWinSingleMove(const char a, const char b, const char c, const char player, qint8 &pose);
+    void grayOutBoardButtons();
+    QPixmap convertPixmapToGray(const QPixmap &originalPixmap);
 
 private slots:
     void onGoBackButtonClicked();
@@ -121,9 +125,5 @@ signals:
 #endif // TICTACTOE_H
 
 /* TO DO LIST:
- * - IMPROVE COMPUTER LOGIC GAME, adding 3 levels:
- * --- Dummy (dummy bot -> using simple random)
- * --- Easy (using personal bot trying to find if missing single shot to win)
- * --- Medium/Hard (minmax algorithm)
- * - Gray out when draw game
+ * - Implement minmaxalgorithm for HARD level
  */

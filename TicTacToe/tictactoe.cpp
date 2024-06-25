@@ -522,6 +522,7 @@ void TicTacToe::handlePlayerAction(const gameState &action_result, const char pl
 
         reset_board_button_->setDefault(true);
         reset_board_button_->setText("New Game");
+        grayOutBoardButtons();
         break;
     }
     case gameState::playing:{
@@ -674,4 +675,45 @@ void TicTacToe::performBotAction(){
     botActionBasedOnLevel();
     robot_status = checkGameStateForPlayer(computer_icon_char_);
     handlePlayerAction(robot_status, computer_icon_char_);
+}
+
+void TicTacToe::grayOutBoardButtons(){
+    for (qint8 i = 0; i < 3; ++i) {
+        for (qint8 j = 0; j < 3; ++j) {
+            QPushButton *button = board_buttons_[i][j];
+            QIcon icon = button->icon();
+            QSize iconSize = button->iconSize();
+
+            // Retrieve the current icon pixmap
+            QPixmap originalPixmap = icon.pixmap(iconSize);
+
+            // Convert the pixmap to grayscale using a separate function
+            QPixmap grayPixmap = convertPixmapToGray(originalPixmap);
+
+            // Create a new QIcon with the grayscale pixmap
+            QIcon grayIcon(grayPixmap);
+
+            // Set the gray icon back to the button
+            button->setIcon(grayIcon);
+        }
+    }
+}
+
+QPixmap TicTacToe::convertPixmapToGray(const QPixmap &original_pixmap) {
+    QSize iconSize = original_pixmap.size();
+
+    // Create a new pixmap for the grayscale version
+    QPixmap gray_pixmap(iconSize);
+    // Ensure transparency is preserved
+    gray_pixmap.fill(Qt::transparent);
+
+    // Create a QPainter to paint the grayscale version
+    QPainter painter(&gray_pixmap);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    painter.drawPixmap(0, 0, original_pixmap);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    painter.fillRect(gray_pixmap.rect(), QColor(10, 10, 10));
+    painter.end();
+
+    return gray_pixmap;
 }
