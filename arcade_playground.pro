@@ -9,11 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Tetris/tetrisboard.cpp \
+    Tetris/tetrispiece.cpp \
+    Tetris/tetriswindow.cpp \
     TicTacToe/tictactoe.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    Tetris/tetrisboard.h \
+    Tetris/tetrispiece.h \
+    Tetris/tetriswindow.h \
     TicTacToe/tictactoe.h \
     mainwindow.h
 

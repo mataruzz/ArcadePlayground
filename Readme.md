@@ -15,6 +15,6 @@ Welcome to the Arcade Platform! This project is built using Qt and C++ to provid
 
 ### Application Overview
 <p align="center">
-    <img src="./Images/TicTacToe/Samples/ArcadePlatform_main_window.png" width="265">
-    <img src="./Images/TicTacToe/Samples/TicTacToe_main_window.png" width="300">
+    <img src="./Images/TicTacToe/Samples/ArcadePlatform_main_window.png" height="260">
+    <img src="./Images/TicTacToe/Samples/TicTacToe_main_window.png" height="260">
 </p>

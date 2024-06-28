@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 
 #include "TicTacToe/tictactoe.h"
+#include "Tetris/tetriswindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +28,7 @@ public:
 
 private slots:
     void showTicTacToe();
+    void showTetris();
     void showMainFromTicTacToe();
 
 private:
@@ -35,9 +37,11 @@ private:
     QSize original_main_window_size_;
 
     QPushButton *tic_tac_toe_button_;
+    QPushButton *tetris_button_;
 
     // Widgets
     TicTacToe *tic_tac_toe_widget_;
+    TetrisWindow *tetris_widget_;
 
     QStackedWidget *stacked_widget_;
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
-    <height>357</height>
+    <width>472</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>160</x>
       <y>280</y>
       <width>141</width>
       <height>31</height>
@@ -45,7 +45,7 @@
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>20</y>
       <width>361</width>
       <height>41</height>
@@ -74,10 +74,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:700; font-style:italic;&quot;&gt;What game do you want to play?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="TicTacToeFrame">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>80</x>
       <y>80</y>
       <width>121</width>
       <height>161</height>
@@ -106,12 +106,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="TicTacToeLabel">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="resources.qrc">:/Images/TicTacToe/tic_tac_toe_game.png</pixmap>
+        <pixmap resource="resources.qrc">:/TicTacToe/Images/TicTacToe/tic_tac_toe_game.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -136,9 +136,72 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </item>
     </layout>
    </widget>
-   <zorder>frame</zorder>
+   <widget class="QFrame" name="TetrisFrame">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>80</y>
+      <width>121</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNone</set>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+     <property name="spacing">
+      <number>17</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="TetrisLabel">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resources.qrc">:/Tetris/Images/Tetris/tetris_game.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="TetrisButton">
+       <property name="text">
+        <string>Tetris</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <zorder>TicTacToeFrame</zorder>
    <zorder>pushButton_2</zorder>
    <zorder>textEdit</zorder>
+   <zorder>TetrisFrame</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
@@ -146,7 +209,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>405</width>
+     <width>472</width>
      <height>22</height>
     </rect>
    </property>

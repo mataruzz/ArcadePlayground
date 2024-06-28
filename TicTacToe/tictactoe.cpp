@@ -162,8 +162,8 @@ void TicTacToe::initializeBoard(){
  * (black, red, green) based on the selected player icon and status.
  */
 void TicTacToe::initializeIcons(){
-    x_icon_path_ = ":/Images/TicTacToe/x_icon_";
-    o_icon_path_ = ":/Images/TicTacToe/o_icon_";
+    x_icon_path_ = ":/TicTacToe/Images/TicTacToe/x_icon_";
+    o_icon_path_ = ":/TicTacToe/Images/TicTacToe/o_icon_";
 
     x_black_icon_path_ = x_icon_path_ + "black.png";
     o_black_icon_path_ = o_icon_path_ + "black.png";
