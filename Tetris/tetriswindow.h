@@ -38,6 +38,7 @@ private:
 
     QLabel *createLabel(const QString &text);
     void initializeWindow();
+    QSize getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column);
 
 private slots:
     void onGoBackButtonClicked();
@@ -46,6 +47,11 @@ private slots:
 
 signals:
     void goBackToMainMenu();
+
+    void gameStarted();
+    void gameResetted();
+    void gamePaused();
+    void gameResumed();
 
 };
 
