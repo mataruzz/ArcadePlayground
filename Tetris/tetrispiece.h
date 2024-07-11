@@ -28,10 +28,13 @@ public:
     int maxX() const;
     int minY() const;
     int maxY() const;
+    TetrisPiece rotatedRight();
+    TetrisPiece rotatedLeft();
 
 private:
     void setX(int index, int x) { coords_[index][0] = x; }
     void setY(int index, int y) { coords_[index][1] = y; }
+
 
     int coords_[4][2];
     TetrisShape piece_shape_;

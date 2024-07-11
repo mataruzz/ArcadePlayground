@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QSize>
 #include <QSpacerItem>
+#include <QFontDatabase>
 
 #include "Tetris/tetrisboard.h"
 
@@ -30,7 +31,8 @@ private:
 
     QLCDNumber *score_lcd_; //1: 40 - 2: 100 - 3: 300 - 4: 1200
 
-    QLabel *next_piece_label_;
+    QLabel *next_piece_label_, *best_score_label_;
+    QLabel *title_label_;
 
     QSize original_widget_size_;
 
@@ -40,10 +42,20 @@ private:
     void initializeWindow();
     QSize getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column);
 
+
 private slots:
     void onGoBackButtonClicked();
+    // void handleStartButtonClicked();
+    // void handleResetButtonClicked();
+    // void handlePauseButtonClicked();
+    // void handleResumeButtonClicked();
+    void handlePauseGame();
+    void handleResumeGame();
+
     void handleStartResetButtonClicked();
     void handlePauseRestartButtonClicked();
+    void handleGameLost();
+    void displayBestScore(int score);
 
 signals:
     void goBackToMainMenu();
@@ -59,11 +71,8 @@ signals:
 
 /*
  * TO DO:
- *  - Fix button display: make that pause is disactivated is start has not clicked
- *  - When resize the Painter properly? Not good inside the paintEvent().
- *  - Improve timer function
- *  - Add boards limits
+ * - ADD player name on best score in pop-up mode
  *
- * - include level difficulty
- *
+ * TO FIX:
+ * - Check multiple timeout 560 print.
  */

@@ -62,3 +62,33 @@ int TetrisPiece::maxY() const
         max = qMax(max, coords_[i][1]);
     return max;
 }
+
+TetrisPiece TetrisPiece::rotatedRight(){
+    if(piece_shape_ == TetrisShape::SquareShape)
+        return *this;
+
+
+    TetrisPiece rotated_piece = *this;
+    // Invert x, and y positions
+    for(int i = 0; i < 4; i++){
+        rotated_piece.setX(i, y(i));
+        rotated_piece.setY(i, -x(i));
+    }
+
+    return rotated_piece;
+}
+
+TetrisPiece TetrisPiece::rotatedLeft(){
+    if(piece_shape_ == TetrisShape::SquareShape)
+        return *this;
+
+
+    TetrisPiece rotated_piece = *this;
+    // Invert x, and y positions
+    for(int i = 0; i < 4; i++){
+        rotated_piece.setX(i, -y(i));
+        rotated_piece.setY(i, x(i));
+    }
+
+    return rotated_piece;
+}
