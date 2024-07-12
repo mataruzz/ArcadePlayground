@@ -9,6 +9,9 @@
 #include <QSize>
 #include <QSpacerItem>
 #include <QFontDatabase>
+#include <QMultiMap>
+#include <QSettings>
+#include <QInputDialog>
 
 #include "Tetris/tetrisboard.h"
 
@@ -21,9 +24,37 @@ public:
     ~TetrisWindow();
 
     QSize getWidgetSize();
+    QMultiMap<int, QString> getScores(){return scores_;};
 
+private slots:
+    void onGoBackButtonClicked();
+    void handlePauseGame();
+    void handleResumeGame();
+
+    void handleStartResetButtonClicked();
+    void handlePauseRestartButtonClicked();
+    void handleGameLost(const int score);
+    // void displayBestScore(int score);
+    void displayBestScores();
+
+public slots:
+    void updateScores(int new_score, const QString& new_username);
+
+signals:
+    void goBackToMainMenu();
+
+    void gameStarted();
+    void gameResetted();
+    void gamePaused();
+    void gameResumed();
 
 private:
+    QLabel *createLabel(const QString &text);
+    void initializeWindow();
+    QSize getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column);
+    void loadScores();
+    void saveScores();
+
     TetrisBoard *board_;
     QPushButton *start_game_button_;
     QPushButton *pause_restart_button_;
@@ -38,32 +69,15 @@ private:
 
     bool is_started_, is_paused_;
 
-    QLabel *createLabel(const QString &text);
-    void initializeWindow();
-    QSize getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column);
+    QMultiMap<int, QString> scores_; // {score, username}
+    QSettings db_;
+
+    static const QString SCORE_KEY_PREFIX;
+    static const QString USERNAME_KEY_PREFIX;
+    static const int NUM_SCORES;
 
 
-private slots:
-    void onGoBackButtonClicked();
-    // void handleStartButtonClicked();
-    // void handleResetButtonClicked();
-    // void handlePauseButtonClicked();
-    // void handleResumeButtonClicked();
-    void handlePauseGame();
-    void handleResumeGame();
 
-    void handleStartResetButtonClicked();
-    void handlePauseRestartButtonClicked();
-    void handleGameLost();
-    void displayBestScore(int score);
-
-signals:
-    void goBackToMainMenu();
-
-    void gameStarted();
-    void gameResetted();
-    void gamePaused();
-    void gameResumed();
 
 };
 
@@ -71,7 +85,6 @@ signals:
 
 /*
  * TO DO:
- * - ADD player name on best score in pop-up mode
  *
  * TO FIX:
  * - Check multiple timeout 560 print.

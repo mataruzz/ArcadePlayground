@@ -1,11 +1,17 @@
 #include "tetriswindow.h"
 
+const QString TetrisWindow::SCORE_KEY_PREFIX = "Tetris/Podium/Score";
+const QString TetrisWindow::USERNAME_KEY_PREFIX = "Tetris/Podium/Username";
+const int TetrisWindow::NUM_SCORES = 3;
+
+
 TetrisWindow::~TetrisWindow(){};
 
 TetrisWindow::TetrisWindow(QWidget *parent)
     : QWidget(parent)
     , is_started_(false)
     , is_paused_(false)
+    , db_(QSettings("ArcadePlayground", "Tetris"))
 
 {
     original_widget_size_ = this->size();
@@ -34,8 +40,14 @@ TetrisWindow::TetrisWindow(QWidget *parent)
 
     best_score_label_ = new QLabel();
     best_score_label_->setAlignment(Qt::AlignRight);
-    int best_score = board_->loadBestScore();
-    displayBestScore(best_score);
+
+    // To reset score board
+    // for(int i = 0; i<NUM_SCORES; i++){
+    //     db_.remove(SCORE_KEY_PREFIX + QString::number(i));
+    //     db_.remove(USERNAME_KEY_PREFIX + QString::number(i));
+    // }
+    loadScores();
+    displayBestScores();
 
     initializeWindow();
 
@@ -50,24 +62,63 @@ TetrisWindow::TetrisWindow(QWidget *parent)
     connect(board_, &TetrisBoard::gameLost, this, &TetrisWindow::handleGameLost);
 
     connect(board_, &TetrisBoard::updateScoreLcd, score_lcd_, qOverload<int>(&QLCDNumber::display));
-    connect(board_, &TetrisBoard::updateBestScoreLcd, this, &TetrisWindow::displayBestScore);
 
     connect(this, &TetrisWindow::goBackToMainMenu, board_, &TetrisBoard::pause);
     connect(this, &TetrisWindow::goBackToMainMenu, this, &TetrisWindow::handlePauseGame);
-
 }
 
-void TetrisWindow::displayBestScore(int score){
-    QString best_score_text = "Best score:\n\n" + QString::number(score);
+// void TetrisWindow::displayBestScore(int score){
+//     // QString best_score_text = "Best score:\n\n" + QString() + QString::number(score);
+//     // QFont font = best_score_label_->font();
+//     // font.setBold(true);
+//     // font.setPointSize(9);
+//     // best_score_label_->setFont(font);
+//     // best_score_label_->setText(best_score_text);
+// }
+
+void TetrisWindow::displayBestScores()
+{
+    QString best_scores_text = "Best scores:\n";
+    int i = -1;
+    auto it = scores_.constEnd();
+    do {
+        if(scores_.empty())
+            break;
+
+        --it; ++i;
+        best_scores_text += it.value() + " - " + QString::number(it.key());
+        best_scores_text += "\n";
+    } while (it != scores_.constBegin() && i < NUM_SCORES);
+
     QFont font = best_score_label_->font();
     font.setBold(true);
     font.setPointSize(9);
     best_score_label_->setFont(font);
-    best_score_label_->setText(best_score_text);
+    best_score_label_->setText(best_scores_text);
 }
 
-void TetrisWindow::handleGameLost(){
+void TetrisWindow::handleGameLost(const int score){
     pause_restart_button_->setEnabled(false);
+
+    // qDebug() << "Getting score: " << score;
+
+    // if score in podium
+    if(score > scores_.begin().key() || scores_.size() < NUM_SCORES){
+        // POP OP
+        QString username;
+        bool is_username_acquired;
+        username = QInputDialog::getText(this, "Enter Username",
+                                         "You are withing the top " + QString::number(NUM_SCORES) +
+                                         "! :)\nPlease enter your username:", QLineEdit::Normal,
+                                          "", &is_username_acquired);
+
+        if(!is_username_acquired)
+            username = "unknown";
+
+        updateScores(score, username);
+        displayBestScores();
+    }
+
     // qDebug() << "[HandleGameLost] You lost :(";
 }
 
@@ -276,4 +327,40 @@ QSize TetrisWindow::getSizeFromCellToCell(QGridLayout* layout, int from_row, int
     // qDebug() << "getSizeFromCellToCell [width, height]: [" << width << ", " << height << "]";
 
     return QSize(width, height);
+}
+
+void TetrisWindow::saveScores()
+{
+    int i = -1;
+    auto it = scores_.cend();
+    do{
+        --it; ++i;
+        db_.setValue(SCORE_KEY_PREFIX + QString::number(i), it.key());
+        db_.setValue(USERNAME_KEY_PREFIX + QString::number(i), it.value());
+
+    }while(it != scores_.constBegin() && i < NUM_SCORES);
+}
+
+void TetrisWindow::loadScores()
+{
+    scores_.clear();
+
+    for(int i = 0; i<NUM_SCORES; i++){
+        int score = db_.value(SCORE_KEY_PREFIX + QString::number(i), 0).toInt();
+        QString username = db_.value(USERNAME_KEY_PREFIX + QString::number(i), "").toString();
+
+        if(score!=0 && !username.isEmpty())
+            scores_.insert(score, username);
+    }
+}
+
+void TetrisWindow::updateScores(int new_score, const QString& new_username)
+{
+    scores_.insert(new_score, new_username);
+    while(scores_.size() > NUM_SCORES){
+        auto it = scores_.cbegin();
+        scores_.erase(it);
+    }
+
+    saveScores();
 }

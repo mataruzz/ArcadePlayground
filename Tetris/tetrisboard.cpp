@@ -11,12 +11,8 @@ TetrisBoard::TetrisBoard(QWidget *parent)
     , level_up_range_(2400)
     , not_active_alpha_color_(100)
     , active_alpha_color_(255)
-    , settings_(QSettings("ArcadePlayground", "Tetris"))
     , board_(QVector<TetrisShape>(board_width_steps_*board_height_steps_))
 {
-    // If necessary to reset best score
-    // settings_.remove("Tetris/bestScore");
-
     // Set some default properties for the frame
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
@@ -24,7 +20,6 @@ TetrisBoard::TetrisBoard(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
 
     clearBoard();
-    loadBestScore();
     next_piece_.setRandomShape();
     // qDebug() << "Initialization completed: piece: " << int(next_piece_.shape()) ;
 }
@@ -56,6 +51,8 @@ void TetrisBoard::paintEvent(QPaintEvent *event)
         alpha_color = not_active_alpha_color_;
     } else if(is_lost_){
         alpha_color = not_active_alpha_color_;
+        QString test = "test";
+        emit updateScores(score_, test);
     }
 
     drawBackgroundGrid(painter, alpha_color);
@@ -277,7 +274,7 @@ void TetrisBoard::newPiece()
         curr_piece_.setShape(NoShape);
         is_lost_ = true;
         timer_.stop();
-        emit gameLost();
+        emit gameLost(score_);
         update();
     }
 
@@ -356,15 +353,12 @@ void TetrisBoard::pieceDropped()
     score_+=10;
 
     emit updateScoreLcd(score_);
-    if(score_>best_score_){
-        saveBestScore();
+    if(score_>best_score_)
         emit updateBestScoreLcd(score_);
-    }
 
-    if(num_piece_dropped_ % 25 == 0){
+
+    if(num_piece_dropped_ % 25 == 0)
         levelUp();
-        // std::cout << "PIECE DROPPED" << std::endl;
-    }
 
     removeFullLines();
     newPiece();
@@ -406,22 +400,21 @@ void TetrisBoard::removeFullLines(){
                 levelUp();
 
             emit updateScoreLcd(score_);
-            if(score_ > best_score_){
-                saveBestScore();
+            if(score_ > best_score_)
                 emit updateBestScoreLcd(score_);
-            }
+
         }
 
     }
 }
 
-void TetrisBoard::dropDown(){
-    // need to move the piece till the bottom
-    while(tryMove(curr_piece_, curr_x_, curr_y_ + 1)){
-        // tryMove(curr_piece_, curr_x_, curr_y_ + 1);
-        num_piece_dropped_++;
-    }
-}
+// void TetrisBoard::dropDown(){
+//     // need to move the piece till the bottom
+//     while(tryMove(curr_piece_, curr_x_, curr_y_ + 1)){
+//         // tryMove(curr_piece_, curr_x_, curr_y_ + 1);
+//         num_piece_dropped_++;
+//     }
+// }
 
 void TetrisBoard::updateScore(const int lines_removed){
     switch (lines_removed) {
@@ -459,17 +452,6 @@ void TetrisBoard::setBoardSize(QSize board_size){
 
     // qDebug() << "setBoardSize completed" ;
 
-}
-
-void TetrisBoard::saveBestScore(){
-    settings_.setValue("Tetris/bestScore", score_);
-    // qDebug() << "Saved best score: " << score_;
-}
-
-int TetrisBoard::loadBestScore() {
-    best_score_ =  settings_.value("Tetris/bestScore", 0).toInt();
-    // qDebug() << "LOADED BEST SCORE " << best_score_;
-    return best_score_;
 }
 
 void TetrisBoard::start(){
