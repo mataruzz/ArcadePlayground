@@ -27,22 +27,19 @@ public:
     QMultiMap<int, QString> getScores(){return scores_;};
 
 private slots:
-    void onGoBackButtonClicked();
-    void handlePauseGame();
-    void handleResumeGame();
-
-    void handleStartResetButtonClicked();
-    void handlePauseRestartButtonClicked();
-    void handleGameLost(const int score);
-    // void displayBestScore(int score);
     void displayBestScores();
+    void handleGameLost(const int score);
+    void handlePauseGame();
+    void handlePauseRestartButtonClicked();
+    void handleResumeGame();
+    void handleStartResetButtonClicked();
+    void onGoBackButtonClicked();
 
 public slots:
     void updateScores(int new_score, const QString& new_username);
 
 signals:
     void goBackToMainMenu();
-
     void gameStarted();
     void gameResetted();
     void gamePaused();
@@ -59,33 +56,17 @@ private:
     QPushButton *start_game_button_;
     QPushButton *pause_restart_button_;
     QPushButton *go_back_button_;
-
     QLCDNumber *score_lcd_; //1: 40 - 2: 100 - 3: 300 - 4: 1200
-
     QLabel *next_piece_label_, *best_score_label_;
     QLabel *title_label_;
-
     QSize original_widget_size_;
-
     bool is_started_, is_paused_;
-
     QMultiMap<int, QString> scores_; // {score, username}
     QSettings db_;
 
     static const QString SCORE_KEY_PREFIX;
     static const QString USERNAME_KEY_PREFIX;
     static const int NUM_SCORES;
-
-
-
-
 };
 
 #endif // TETRISWINDOW_H
-
-/*
- * TO DO:
- *
- * TO FIX:
- * - Check multiple timeout 560 print.
- */

@@ -1,5 +1,6 @@
 #include "tetriswindow.h"
 
+// CONSTANT VARIABLE
 const QString TetrisWindow::SCORE_KEY_PREFIX = "Tetris/Podium/Score";
 const QString TetrisWindow::USERNAME_KEY_PREFIX = "Tetris/Podium/Username";
 const int TetrisWindow::NUM_SCORES = 3;
@@ -67,15 +68,11 @@ TetrisWindow::TetrisWindow(QWidget *parent)
     connect(this, &TetrisWindow::goBackToMainMenu, this, &TetrisWindow::handlePauseGame);
 }
 
-// void TetrisWindow::displayBestScore(int score){
-//     // QString best_score_text = "Best score:\n\n" + QString() + QString::number(score);
-//     // QFont font = best_score_label_->font();
-//     // font.setBold(true);
-//     // font.setPointSize(9);
-//     // best_score_label_->setFont(font);
-//     // best_score_label_->setText(best_score_text);
-// }
-
+/**
+ * @brief Displays the best scores in the Tetris game.
+ *
+ * This method updates a label widget (`best_score_label_`) with the best scores.
+ */
 void TetrisWindow::displayBestScores()
 {
     QString best_scores_text = "Best scores:\n\n";
@@ -97,7 +94,17 @@ void TetrisWindow::displayBestScores()
     best_score_label_->setText(best_scores_text);
 }
 
-void TetrisWindow::handleGameLost(const int score){
+/**
+ * @brief Handles actions to be taken when the game is lost.
+ *
+ * This method is called when the game is lost. It disables the pause/restart button,
+ * checks if the current score qualifies for the leaderboard, and if so, prompts the
+ * user to enter their username. The leaderboard is then updated and displayed.
+ *
+ * @param score The score achieved in the game.
+ */
+void TetrisWindow::handleGameLost(const int score)
+{
     pause_restart_button_->setEnabled(false);
 
     // qDebug() << "Getting score: " << score;
@@ -122,8 +129,15 @@ void TetrisWindow::handleGameLost(const int score){
     // qDebug() << "[HandleGameLost] You lost :(";
 }
 
-void TetrisWindow::initializeWindow(){
-
+/**
+ * @brief Initializes the Tetris game window layout.
+ *
+ * This method sets up the layout and positions of various widgets within the Tetris game window.
+ * It defines the grid positions for the game board, buttons, labels, and other UI elements, and
+ * then adds them to a QGridLayout. Finally, it configures the window title and initial size.
+ */
+void TetrisWindow::initializeWindow()
+{
     // BOARD
     [[maybe_unused]] qint8 row_board_start = 1;
     [[maybe_unused]] qint8 row_board_size = 10;
@@ -238,10 +252,26 @@ void TetrisWindow::initializeWindow(){
     resize(540, 400);
 }
 
-void TetrisWindow::onGoBackButtonClicked(){
+/**
+ * @brief Handles the "Go Back" button click event.
+ *
+ * This method is called when the "Go Back" button is clicked. It emits a signal
+ * to navigate back to the main menu of the Tetris game.
+ */
+void TetrisWindow::onGoBackButtonClicked()
+{
     emit goBackToMainMenu();
 }
 
+/**
+ * @brief Creates a QLabel with specified text and formatting.
+ *
+ * This method creates a new QLabel with the given text, centers its alignment both horizontally and vertically,
+ * and sets its font to bold with a point size of 9.
+ *
+ * @param text The text to be displayed in the label.
+ * @return A pointer to the newly created QLabel.
+ */
 QLabel *TetrisWindow::createLabel(const QString &text)
 {
     QLabel *label = new QLabel(text);
@@ -253,13 +283,25 @@ QLabel *TetrisWindow::createLabel(const QString &text)
     return label;
 }
 
-
-QSize TetrisWindow::getWidgetSize(){
+/**
+ * @brief Retrieves the original size of the widget.
+ *
+ * This method returns the original size of the widget stored in the `original_widget_size_` member variable.
+ *
+ * @return The original size of the widget as a QSize object.
+ */
+QSize TetrisWindow::getWidgetSize()
+{
     return original_widget_size_;
 }
 
-
-void TetrisWindow::handleStartResetButtonClicked(){
+/**
+ * @brief Handles toggling the game state between started and reset on button click.
+ *
+ * This method toggles the game state between started and reset when the start/reset button is clicked.
+ */
+void TetrisWindow::handleStartResetButtonClicked()
+{
     if(!is_started_){
         pause_restart_button_->setEnabled(true);
 
@@ -277,10 +319,16 @@ void TetrisWindow::handleStartResetButtonClicked(){
 
     // Setting back focus to main board
     board_->setFocus();
-
 }
 
-void TetrisWindow::handlePauseGame(){
+/**
+ * @brief Handles pausing the game.
+ *
+ * This method changes the text of the pause/restart button to "Play" and emit signals that the game
+ * has been paused.
+ */
+void TetrisWindow::handlePauseGame()
+{
     if(!is_started_)
         return;
 
@@ -289,7 +337,14 @@ void TetrisWindow::handlePauseGame(){
     emit gamePaused();
 }
 
-void TetrisWindow::handleResumeGame(){
+/**
+ * @brief Handles resuming the game.
+ *
+ * This method changes the text of the pause/restart button to "Pause" and signals that the game
+ * has been resumed if the game is currently paused.
+ */
+void TetrisWindow::handleResumeGame()
+{
     if(!is_paused_)
         return;
 
@@ -298,7 +353,18 @@ void TetrisWindow::handleResumeGame(){
     emit gameResumed();
 }
 
-void TetrisWindow::handlePauseRestartButtonClicked(){
+/**
+ * @brief Handles the click event of the pause/restart button.
+ *
+ * This method toggles between pausing and resuming the game based on its current state.
+ * If the game is not started, the method returns without further action.
+ * If the game is started:
+ * - If it is not paused, it calls `handlePauseGame()` to pause the game.
+ * - If it is paused, it calls `handleResumeGame()` to resume the game.
+ * After toggling, the method ensures that the main game board regains focus.
+ */
+void TetrisWindow::handlePauseRestartButtonClicked()
+{
     if(!is_started_)
         return;
 
@@ -312,9 +378,22 @@ void TetrisWindow::handlePauseRestartButtonClicked(){
     board_->setFocus();
 }
 
-
-QSize TetrisWindow::getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column){
-
+/**
+ * @brief Calculates the size between two cells in the grid layout.
+ *
+ * This method computes the size between two cells specified by their row and column indices
+ * in the given QGridLayout. It activates the layout, retrieves the bounding rectangles of
+ * the specified cells, and calculates the width and height between them.
+ *
+ * @param layout The QGridLayout object containing the cells.
+ * @param from_row The starting row index of the first cell.
+ * @param from_column The starting column index of the first cell.
+ * @param to_row The ending row index of the second cell.
+ * @param to_column The ending column index of the second cell.
+ * @return A QSize object representing the width and height between the specified cells.
+ */
+QSize TetrisWindow::getSizeFromCellToCell(QGridLayout* layout, int from_row, int from_column, int to_row, int to_column)
+{
     layout->activate();
 
     // Computing the distance from 2 cells
@@ -329,6 +408,14 @@ QSize TetrisWindow::getSizeFromCellToCell(QGridLayout* layout, int from_row, int
     return QSize(width, height);
 }
 
+/**
+ * @brief Saves the scores to persistent storage.
+ *
+ * This method iterates through the scores stored in the `scores_` map in reverse order,
+ * and saves them along with corresponding usernames to persistent storage using the
+ * `db_` (settings storage) object. Each score and username pair
+ * is stored with a unique key derived from its position in the scores map.
+ */
 void TetrisWindow::saveScores()
 {
     int i = -1;
@@ -341,6 +428,15 @@ void TetrisWindow::saveScores()
     }while(it != scores_.constBegin() && i < NUM_SCORES);
 }
 
+/**
+ * @brief Loads scores from persistent storage.
+ *
+ * This method clears the current scores and then iterates through a fixed number
+ * of possible scores (NUM_SCORES) stored in persistent storage using the `db_`
+ * object. It retrieves each score and corresponding username using predefined keys,
+ * and populates the `scores_` map with valid entries where both score and username
+ * are non-zero and non-empty, respectively.
+ */
 void TetrisWindow::loadScores()
 {
     scores_.clear();
@@ -354,6 +450,16 @@ void TetrisWindow::loadScores()
     }
 }
 
+/**
+ * @brief Updates the scores with a new score and username.
+ *
+ * This method inserts a new score and username into the scores map. If the size of
+ * the scores map exceeds NUM_SCORES, it removes the lowest score entry. After updating
+ * the scores, it saves the scores to persistent storage.
+ *
+ * @param new_score The new score to be added.
+ * @param new_username The username associated with the new score.
+ */
 void TetrisWindow::updateScores(int new_score, const QString& new_username)
 {
     scores_.insert(new_score, new_username);
