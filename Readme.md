@@ -16,7 +16,7 @@ Welcome to the Arcade Platform! This project is built using Qt and C++ to provid
 ### Application Overview
 <p align="center">
     <!-- <img src=".Images/TicTacToe/Samples/TicTacToe.gif" height="260">  -->
-    <img src=".Images/TicTacToe/Samples/TicTacToe.gif" alt="Alt Text" height="260">
+    <img src="https://github.com/mataruzz/ArcadePlayground/blob/main/Images/TicTacToe/Samples/TicTacToe.gif" height="260">
 </p>
 
 <!-- ![Alt Text](.Images/TicTacToe/Samples/TicTacToe.gif) -->
