@@ -78,7 +78,7 @@ TetrisWindow::TetrisWindow(QWidget *parent)
 
 void TetrisWindow::displayBestScores()
 {
-    QString best_scores_text = "Best scores:\n";
+    QString best_scores_text = "Best scores:\n\n";
     int i = -1;
     auto it = scores_.constEnd();
     do {
@@ -168,8 +168,8 @@ void TetrisWindow::initializeWindow(){
     [[maybe_unused]] qint8 col_best_score_label_start = col_score_label_end + 2;
     [[maybe_unused]] qint8 col_best_score_label_size = 1;
     [[maybe_unused]] qint8 col_best_score_label_end = col_best_score_label_start + col_best_score_label_size -1;
-    [[maybe_unused]] qint8 row_best_score_label_start = row_next_piece_end + 3;
-    [[maybe_unused]] qint8 row_best_score_label_size = 1;
+    [[maybe_unused]] qint8 row_best_score_label_start = row_next_piece_end + 2;
+    [[maybe_unused]] qint8 row_best_score_label_size = 2;
     [[maybe_unused]] qint8 row_best_score_label_end = row_best_score_label_start+row_best_score_label_size-1;
 
     // SCORE LCD
