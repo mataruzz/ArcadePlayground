@@ -17,7 +17,7 @@ enum TetrisShape{
 class TetrisPiece
 {
 public:
-    TetrisPiece();
+    TetrisPiece(){};
     void setRandomShape();
     void setShape(TetrisShape shape);
 
@@ -38,7 +38,7 @@ private:
 
     int coords_[4][2];
     TetrisShape piece_shape_;
-    int num_shapes_;
+    // int num_shapes_;
 };
 
 #endif // TETRISPIECE_H
