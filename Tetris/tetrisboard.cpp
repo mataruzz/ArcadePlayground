@@ -24,10 +24,16 @@ TetrisBoard::TetrisBoard(QWidget *parent)
     // qDebug() << "Initialization completed: piece: " << int(next_piece_.shape()) ;
 }
 
-void TetrisBoard::resetTimeout(){
-    timeout_time_ = 700;
-}
-
+/**
+ * @brief Handles the painting of the Tetris board and game state visuals.
+ *
+ * Overrides the default paintEvent function to draw the Tetris board, Tetris pieces,
+ * game messages, and background grid. Depending on the game state (started, paused, lost),
+ * different elements are drawn or updated accordingly. The method uses QPainter to render
+ * graphics on the widget surface.
+ *
+ * @param event Pointer to the QPaintEvent object representing the paint event.
+ */
 void TetrisBoard::paintEvent(QPaintEvent *event)
 {
     // qDebug() << "Called paintEvent" ;
@@ -37,7 +43,6 @@ void TetrisBoard::paintEvent(QPaintEvent *event)
     QRect rect = contentsRect();
     int alpha_color = active_alpha_color_;
 
-    // QFont original_font = painter.font();
     QFont text_font("Arial", 15, QFont::Bold);
     QTextOption text_option;
     text_option.setWrapMode(QTextOption::WordWrap);
@@ -71,16 +76,37 @@ void TetrisBoard::paintEvent(QPaintEvent *event)
     // qDebug() << "paintEvent completed" ;
 }
 
-void TetrisBoard::clearBoard()
-{
-    // qDebug() << "clearBoard started" ;
-    for (int i = 0; i < board_height_steps_ * board_width_steps_; ++i)
-        board_[i] = NoShape;
-
-    // qDebug() << "clearBoard completed" ;
+/**
+ * @brief Handles timer events for the Tetris game.
+ *
+ * Overrides the default timerEvent function. If the timer event is triggered
+ * it calls the `oneLineDown()` method to move the current Tetris piece
+ * down one line. If the timer event is not from the game timer, it delegates the event
+ * handling to the base class (QFrame) implementation.
+ *
+ * @param event Pointer to the QTimerEvent object representing the timer event.
+ */
+void TetrisBoard::timerEvent(QTimerEvent *event){
+    if(event->timerId() == timer_.timerId()){
+        // std::cout << "Timout event passed" << std::endl;
+        oneLineDown();
+    } else {
+        QFrame::timerEvent(event);
+    }
 }
 
-void TetrisBoard::keyReleaseEvent(QKeyEvent *event){
+/**
+ * @brief Handles key release events for controlling the Tetris game.
+ *
+ * Overrides the default keyReleaseEvent function. Controls include releasing the space
+ * key to return to normal speed after speeding up the descent of the current Tetris piece.
+ * If the game is not started, paused, or there is no current piece, the event is delegated
+ * to the base class (QFrame) implementation.
+ *
+ * @param event Pointer to the QKeyEvent object representing the key release event.
+ */
+void TetrisBoard::keyReleaseEvent(QKeyEvent *event)
+{
     if (!is_started_ || is_paused_ || curr_piece_.shape() == NoShape) {
         QFrame::keyReleaseEvent(event);
         return;
@@ -101,6 +127,16 @@ void TetrisBoard::keyReleaseEvent(QKeyEvent *event){
     }
 }
 
+/**
+ * @brief Handles key press events for controlling the Tetris game.
+ *
+ * Overrides the default keyPressEvent. Controls include moving the current Tetris piece
+ * left, right, rotating it left or right, and speeding up its descent. If the game is not started,
+ * paused, or there is no current piece, the event is delegated to the base class
+ * (QFrame) implementation.
+ *
+ * @param event Pointer to the QKeyEvent object representing the key press event.
+ */
 void TetrisBoard::keyPressEvent(QKeyEvent *event)
 {
     if (!is_started_ || is_paused_ || curr_piece_.shape() == NoShape) {
@@ -138,37 +174,25 @@ void TetrisBoard::keyPressEvent(QKeyEvent *event)
     }
 }
 
-
-void TetrisBoard::speedUp(){
-    timer_.start(50, this);
-}
-
-void TetrisBoard::backToNormalSpeed(){
-    timer_.start(timeout_time_, this);
-}
-
-void TetrisBoard::levelUp(){
-    timeout_time_ -= qRound( static_cast<float>(20 * timeout_time_) / 100 );
-    timer_.stop();
-    timer_.start(timeout_time_, this);
-    std::cout << "Leveled up, timeout = " <<  timeout_time_ << std::endl;
-}
-
-void TetrisBoard::timerEvent(QTimerEvent *event){
-    if(event->timerId() == timer_.timerId()){
-        // std::cout << "Timout event passed" << std::endl;
-        oneLineDown();
-    } else {
-        QFrame::timerEvent(event);
-    }
-}
-
-void TetrisBoard::drawSquare(QPainter &painter, int x, int y, TetrisShape shape, int alpha_color = 255){
+/**
+ * @brief Draws a single Tetris square at the specified position.
+ *
+ * Draws a square representing a Tetris piece at the specified coordinates (x, y) on the board
+ * using the provided QPainter object. The color and appearance of the square are determined by
+ * the shape parameter, with an optional alpha color value for transparency.
+ *
+ * @param painter Reference to the QPainter object used for drawing.
+ * @param x X-coordinate of the top-left corner of the square.
+ * @param y Y-coordinate of the top-left corner of the square.
+ * @param shape Enum value representing the shape and color of the Tetris square.
+ * @param alpha_color Optional alpha color value for transparency effect (default: 255, fully opaque).
+ */
+void TetrisBoard::drawSquare(QPainter &painter, int x, int y, TetrisShape shape, int alpha_color = 255)
+{
     static constexpr QRgb colorTable[8] = {
         0x000000, 0xCC6666, 0x66CC66, 0x6666CC,
         0xCCCC66, 0xCC66CC, 0x66CCCC, 0xDAAA00
     };
-
 
     QColor color = QColor::fromRgb(colorTable[int(shape)]);
     color.setAlpha(alpha_color);
@@ -189,8 +213,18 @@ void TetrisBoard::drawSquare(QPainter &painter, int x, int y, TetrisShape shape,
                      x + square_side_ - 1, y + 1);
 }
 
-void TetrisBoard::drawBackgroundGrid(QPainter &painter, int alpha_color = 255){
-
+/**
+ * @brief Draws the background grid of the Tetris board.
+ *
+ * Draws a grid pattern as the background of the Tetris board using the provided QPainter object.
+ * The grid consists of vertical and horizontal lines spaced according to the square side length,
+ * with an optional alpha color value for transparency.
+ *
+ * @param painter Reference to the QPainter object used for drawing.
+ * @param alpha_color Optional alpha color value for transparency effect (default: 255, fully opaque).
+ */
+void TetrisBoard::drawBackgroundGrid(QPainter &painter, int alpha_color = 255)
+{
     // qDebug() << "grid background started" ;
     QRect rect = contentsRect();
     QColor color = Qt::lightGray;
@@ -213,12 +247,22 @@ void TetrisBoard::drawBackgroundGrid(QPainter &painter, int alpha_color = 255){
     // qDebug() << "grid background completed" ;
 }
 
+/**
+ * @brief Draws all placed pieces on the board.
+ *
+ * Draws squares representing all placed Tetris pieces on the board using the provided QPainter object.
+ * The pieces are drawn based on their stored positions in the board matrix, applying an optional alpha
+ * color effect for transparency.
+ *
+ * @param painter Reference to the QPainter object used for drawing.
+ * @param alpha_color Optional alpha color value for transparency effect.
+ */
 void TetrisBoard::drawPlacedPieces(QPainter &painter, int alpha_color)
 {
     QRect rect = contentsRect();
 
     // qDebug() << "Drawing OLD pieces" ;
-    // // Drawing back all past squares (stored in board_)
+    // Drawing back all past squares (stored in board_)
     for(int i = 0; i<board_height_steps_; ++i){
         for (int j = 0; j<board_width_steps_; ++j){
             TetrisShape shape = shapeAt(j, i);
@@ -229,9 +273,17 @@ void TetrisBoard::drawPlacedPieces(QPainter &painter, int alpha_color)
             }
         }
     }
-
 }
 
+/**
+ * @brief Draws the current piece on the board.
+ *
+ * Draws the squares of the current piece onto the board using the provided QPainter object.
+ * The piece is drawn at its current position on the board, applying an optional alpha color effect.
+ *
+ * @param painter Reference to the QPainter object used for drawing.
+ * @param alpha_color Optional alpha color value for transparency effect.
+ */
 void TetrisBoard::drawCurrentPiece(QPainter &painter, int alpha_color)
 {
     QRect rect = contentsRect();
@@ -249,14 +301,15 @@ void TetrisBoard::drawCurrentPiece(QPainter &painter, int alpha_color)
     }
 }
 
-QSize TetrisBoard::getBoardSize(){
-    // qDebug() << "getBoardSize: [Width, Height]: " << square_side_*board_width_steps_ + 2*frameWidth() << "," <<square_side_*board_height_steps_ + 2*frameWidth();
-
-    return QSize(square_side_*board_width_steps_ + 2*frameWidth(),
-                 square_side_*board_height_steps_ + 2*frameWidth());
-}
-
-
+/**
+ * @brief Display a new piece in the game.
+ *
+ * Sets the current piece to be the previously shown next piece, generates a new random piece
+ * for the next piece preview, updates and displays the next piece preview on the QLabel widget,
+ * positions the current piece in the middle of the board's width, and attempts to place it at
+ * the top of the board. If the new piece cannot be placed due to lack of space, the game is
+ * considered lost, the current piece is set to NoShape, and the game stops with a signal emitted.
+ */
 void TetrisBoard::newPiece()
 {
     curr_piece_ = next_piece_;
@@ -267,7 +320,6 @@ void TetrisBoard::newPiece()
     curr_x_ = board_width_steps_ / 2;
     curr_y_ = qAbs(curr_piece_.minY());
 
-
     // qDebug() << "[NEWPIECE] Trying positioning new piece top. Curr coords: " << curr_x_ << ", " << curr_y_;
     if (!tryMove(curr_piece_, curr_x_, curr_y_)) {
         // qDebug() << "New piece no have space, setting noShape.";
@@ -277,16 +329,32 @@ void TetrisBoard::newPiece()
         emit gameLost(score_);
         update();
     }
-
     // qDebug() << "NewPiece completed.";
 }
 
-void TetrisBoard::setNextPieceLabel(QLabel *label){
+/**
+ * @brief Sets the QLabel widget to display the next piece preview.
+ *
+ * Assigns the provided QLabel pointer to `next_piece_label_`, which is used
+ * to show the preview of the next piece to be played in the Tetris game.
+ *
+ * @param label Pointer to the QLabel widget used for displaying the next piece preview.
+ */
+void TetrisBoard::setNextPieceLabel(QLabel *label)
+{
     next_piece_label_ = label;
 }
 
-void TetrisBoard::showNextPiece(){
-
+/**
+ * @brief Displays the next piece preview on a QLabel widget.
+ *
+ * Retrieves the next piece to be played and calculates its dimensions.
+ * Creates a pixmap to draw the piece preview, fills it with the window's palette color,
+ * and draws each square of the piece onto the pixmap. Sets the pixmap to the QLabel
+ * for display, centered within the label.
+ */
+void TetrisBoard::showNextPiece()
+{
     if(!next_piece_label_)
         return;
 
@@ -308,13 +376,31 @@ void TetrisBoard::showNextPiece(){
     next_piece_label_->setAlignment(Qt::AlignCenter);
 }
 
-void TetrisBoard::oneLineDown(){
-
+/**
+ * @brief Moves the current piece one line down if possible.
+ *
+ * Attempts to move the current piece one line down. If the move is successful,
+ * the piece's position is updated. If the move fails (piece cannot move down further),
+ * the pieceDropped() method is called to finalize the piece's position on the board.
+ */
+void TetrisBoard::oneLineDown()
+{
     if(!tryMove(curr_piece_, curr_x_, curr_y_ + 1))
         pieceDropped();
-
 }
 
+/**
+ * @brief Attempts to move a piece to a new position on the board.
+ *
+ * Checks if the new position for the piece is within the board boundaries and does not
+ * overlap with existing pieces on the board. If the move is valid, updates the current
+ * piece and its position, and triggers a board update.
+ *
+ * @param new_piece The piece to move.
+ * @param new_x The new x-coordinate for the piece.
+ * @param new_y The new y-coordinate for the piece.
+ * @return true if the piece can be moved to the new position, false otherwise.
+ */
 bool TetrisBoard::tryMove(const TetrisPiece &new_piece, int new_x, int new_y)
 {
     // qDebug() << "TryMove starting." ;
@@ -340,6 +426,13 @@ bool TetrisBoard::tryMove(const TetrisPiece &new_piece, int new_x, int new_y)
     return true;
 }
 
+/**
+ * @brief Handles actions after a piece has been dropped.
+ *
+ * Places the current piece on the board, increments the count of dropped pieces,
+ * increases the score, updates the score display, checks for level up conditions,
+ * removes full lines from the board, and spawns a new piece.
+ */
 void TetrisBoard::pieceDropped()
 {
     for (int i = 0; i < 4; ++i) {
@@ -364,9 +457,15 @@ void TetrisBoard::pieceDropped()
     newPiece();
 }
 
-
-void TetrisBoard::removeFullLines(){
-
+/**
+ * @brief Removes full lines from the board and updates the score.
+ *
+ * Checks each line on the board to see if it is full. If a line is full, it is removed
+ * and all lines above it are moved down. The score is updated based on the number of
+ * lines removed, and the level is increased if necessary.
+ */
+void TetrisBoard::removeFullLines()
+{
     int num_full_lines = 0;
 
     for(int i = 0; i < board_height_steps_; i++){
@@ -404,19 +503,49 @@ void TetrisBoard::removeFullLines(){
                 emit updateBestScoreLcd(score_);
 
         }
-
     }
 }
 
-// void TetrisBoard::dropDown(){
-//     // need to move the piece till the bottom
-//     while(tryMove(curr_piece_, curr_x_, curr_y_ + 1)){
-//         // tryMove(curr_piece_, curr_x_, curr_y_ + 1);
-//         num_piece_dropped_++;
-//     }
-// }
+/**
+ * @brief Clears the Tetris board by resetting all board squares to NoShape.
+ *
+ * Resets the board by setting each square in the board array to NoShape,
+ * indicating that no Tetris piece occupies that square. This method prepares the board
+ * for a new game or after the game has ended.
+ */
+void TetrisBoard::clearBoard()
+{
+    // qDebug() << "clearBoard started" ;
+    for (int i = 0; i < board_height_steps_ * board_width_steps_; ++i)
+        board_[i] = NoShape;
 
-void TetrisBoard::updateScore(const int lines_removed){
+    // qDebug() << "clearBoard completed" ;
+}
+
+/**
+ * @brief Increases the game speed by reducing the timeout interval.
+ *
+ * Decreases the timeout interval (`timeout_time_`) by 20% of its current value,
+ * which effectively speeds up the falling of Tetris pieces. Restarts the timer
+ * with the updated timeout interval.
+ */
+void TetrisBoard::levelUp()
+{
+    timeout_time_ -= qRound( static_cast<float>(20 * timeout_time_) / 100 );
+    timer_.stop();
+    timer_.start(timeout_time_, this);
+    // std::cout << "Leveled up, timeout = " <<  timeout_time_ << std::endl;
+}
+
+/**
+ * @brief Updates the score based on the number of lines removed.
+ *
+ * Adds points to the score based on the number of lines removed in a single move.
+ *
+ * @param lines_removed The number of lines removed.
+ */
+void TetrisBoard::updateScore(const int lines_removed)
+{
     switch (lines_removed) {
     case 1:
         score_+=40;
@@ -433,8 +562,31 @@ void TetrisBoard::updateScore(const int lines_removed){
     }
 }
 
-void TetrisBoard::setBoardSize(QSize board_size){
+/**
+ * @brief Calculates and returns the size of the game board.
+ *
+ * Computes the total width and height of the game board including squares and frame borders,
+ * based on the square side length, number of steps in width and height, and the frame width.
+ *
+ * @return QSize object representing the size of the game board.
+ */
+QSize TetrisBoard::getBoardSize(){
+    // qDebug() << "getBoardSize: [Width, Height]: " << square_side_*board_width_steps_ + 2*frameWidth() << "," <<square_side_*board_height_steps_ + 2*frameWidth();
+    return QSize(square_side_*board_width_steps_ + 2*frameWidth(),
+                 square_side_*board_height_steps_ + 2*frameWidth());
+}
 
+/**
+ * @brief Sets the size of the game board.
+ *
+ * Resizes the board to the given dimensions, computes the number of squares
+ * in width and height and adjusts the widget size to match an integer multiple
+ * of squares.
+ *
+ * @param board_size The desired size of the board.
+ */
+void TetrisBoard::setBoardSize(QSize board_size)
+{
     // qDebug() << "setBoardSize started" ;
     // Resizing with available dimension in the layout
     resize(board_size);
@@ -451,10 +603,16 @@ void TetrisBoard::setBoardSize(QSize board_size){
     clearBoard();
 
     // qDebug() << "setBoardSize completed" ;
-
 }
 
-void TetrisBoard::start(){
+/**
+ * @brief Starts a new game.
+ *
+ * Initializes game state, resets the timeout, updates the score display,
+ * clears the board, spawns a new piece, and starts the game timer.
+ */
+void TetrisBoard::start()
+{
     is_started_ = true;
     is_lost_ = false;
 
@@ -470,7 +628,14 @@ void TetrisBoard::start(){
     // std::cout << "Game logic has started. Timer started" << std::endl;
 }
 
-void TetrisBoard::reset(){
+/**
+ * @brief Resets the game state.
+ *
+ * This method resets the game to its initial state. It stops the game logic,
+ * sets the game as not started and not paused, and resets the score.
+ */
+void TetrisBoard::reset()
+{
     is_started_ = false;
     is_paused_ = false;
     score_ = 0;
@@ -478,7 +643,14 @@ void TetrisBoard::reset(){
     // std::cout << "Game logic has stopped." << std::endl;
 }
 
-void TetrisBoard::pause(){
+/**
+ * @brief Pauses the ongoing game.
+ *
+ * This method pauses the game if it is currently started. It stops the game timer
+ * and updates the game state.
+ */
+void TetrisBoard::pause()
+{
     if(!is_started_)
         return;
 
@@ -488,7 +660,14 @@ void TetrisBoard::pause(){
     update();
 }
 
-void TetrisBoard::resume(){
+/**
+ * @brief Resumes the paused game.
+ *
+ * This method resumes the game if it is currently paused. It restarts the game timer
+ * and updates the game state.
+ */
+void TetrisBoard::resume()
+{
     if(!is_paused_)
         return;
 

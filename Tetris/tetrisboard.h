@@ -28,7 +28,6 @@ public:
     void setNextPieceLabel(QLabel *label);
     void setBoardSize(QSize board_size);
     void setSquareSide(int side_size){ square_side_ = side_size; }
-    // int loadBestScore();
 
 public slots:
     void start();
@@ -51,22 +50,20 @@ protected:
 
 
 private:
-    void backToNormalSpeed();
+    inline void backToNormalSpeed(){   timer_.start(timeout_time_, this); };
     void clearBoard();
     void drawBackgroundGrid(QPainter &painter, int alpha_color);
     void drawCurrentPiece(QPainter &painter, int alpha_color);
     void drawPlacedPieces(QPainter &painter, int alpha_color);
     void drawSquare(QPainter &painter, int x, int y, TetrisShape shape, int alpha_color);
-    // void dropDown();
     void levelUp();
     void newPiece();
     void oneLineDown();
     void pieceDropped();
     void removeFullLines();
-    void resetTimeout();
-    // void saveBestScore();
+    inline void resetTimeout(){    timeout_time_ = 700;    };
     void showNextPiece();
-    void speedUp();
+    inline void speedUp(){  timer_.start(50, this); };
     TetrisShape &shapeAt(int x, int y) { return board_[(y * board_width_steps_) + x]; }
     bool tryMove(const TetrisPiece &new_piece, int new_x, int new_y);
     void updateScore(const int lines_removed);
