@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>425</height>
+    <width>529</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -55,22 +55,6 @@
    </property>
    <property name="checkable">
     <bool>false</bool>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="center_top">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>100</y>
-     <width>60</width>
-     <height>60</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -469,7 +453,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <string>Reset Score</string>
    </property>
    <property name="icon">
-    <iconset theme="emblem-important"/>
+    <iconset theme="edit-clear"/>
    </property>
    <property name="autoDefault">
     <bool>false</bool>
@@ -678,12 +662,27 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="right_top_2">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>100</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
   <zorder>textBrowser_3</zorder>
   <zorder>textBrowser_4</zorder>
   <zorder>textBrowser</zorder>
   <zorder>goBackButton</zorder>
   <zorder>left_top</zorder>
-  <zorder>center_top</zorder>
   <zorder>right_top</zorder>
   <zorder>right_center</zorder>
   <zorder>left_center</zorder>
@@ -710,6 +709,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <zorder>label</zorder>
   <zorder>playerIconLabel</zorder>
   <zorder>levelComboBox</zorder>
+  <zorder>right_top_2</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -9,8 +9,9 @@
 // #include <QWidget>
 #include <QHBoxLayout>
 
-#include "TicTacToe/tictactoe.h"
+// #include "TicTacToe/tictactoe.h"
 #include "Tetris/tetriswindow.h"
+#include "TicTacToe/tictactoewindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,8 +41,9 @@ private:
     QPushButton *tetris_button_;
 
     // Widgets
-    TicTacToe *tic_tac_toe_widget_;
+    // TicTacToe *tic_tac_toe_widget_;
     TetrisWindow *tetris_widget_;
+    TicTacToeWindow *tic_tac_toe_widget_;
 
     QStackedWidget *stacked_widget_;
 

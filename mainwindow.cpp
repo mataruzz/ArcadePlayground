@@ -10,8 +10,8 @@ MainWindow::~MainWindow()
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::ArcadePlayground)
-    , tic_tac_toe_widget_(new TicTacToe)
     , tetris_widget_(new TetrisWindow)
+    , tic_tac_toe_widget_(new TicTacToeWindow)
     , stacked_widget_(new QStackedWidget)
     // ,Add other widgets here
 {
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tetris_button_, &QPushButton::clicked, this, &MainWindow::showTetris);
 
     // Connecting signals
-    connect(tic_tac_toe_widget_, &TicTacToe::goBackToMainMenu, this, &MainWindow::showMainFromTicTacToe);
+    connect(tic_tac_toe_widget_, &TicTacToeWindow::goBackToMainMenu, this, &MainWindow::showMainFromTicTacToe);
     connect(tetris_widget_, &TetrisWindow::goBackToMainMenu, this, &MainWindow::showMainFromTicTacToe);
 
 }

@@ -12,7 +12,8 @@ SOURCES += \
     Tetris/tetrisboard.cpp \
     Tetris/tetrispiece.cpp \
     Tetris/tetriswindow.cpp \
-    TicTacToe/tictactoe.cpp \
+    TicTacToe/tictactoeboard.cpp \
+    TicTacToe/tictactoewindow.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -20,11 +21,13 @@ HEADERS += \
     Tetris/tetrisboard.h \
     Tetris/tetrispiece.h \
     Tetris/tetriswindow.h \
-    TicTacToe/tictactoe.h \
+    TicTacToe/tictactoeboard.h \
+    TicTacToe/tictactoewindow.h \
     mainwindow.h
 
 FORMS += \
-    TicTacToe/tictactoe.ui \
+    TicTacToe/board_form.ui \
+    TicTacToe/tictactoe_copy.ui \
     mainwindow.ui
 
 # Default rules for deployment.
