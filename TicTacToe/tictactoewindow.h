@@ -18,39 +18,42 @@ class TicTacToeWindow : public QWidget
     Q_OBJECT
 public:
     explicit TicTacToeWindow(QWidget *parent = nullptr);
-
     QSize getWidgetSize();
 
 signals:
     void goBackToMainMenu();
-    void iconCrossSelected();
     void iconCircleSelected();
+    void iconCrossSelected();
 
 private slots:
-    void onGoBackButtonClicked();
     void handleChangeIconClicked();
-    void handleResetBoardClicked();
-    void handleResetScoreClicked();
-    void handleUpdateCommentLabel(const QString &text);
     void handleChangeLevelBox();
     void handleFinishedGame(const gameState &game_state, const char &player);
     void handleGameStarted();
+    void handleResetBoardClicked();
+    void handleResetScoreClicked();
+    void handleUpdateCommentLabel(const QString &text);
+    void onGoBackButtonClicked();
 
 
 private:
-    void initializeWindow();
-    void initializeButtons();
-    void initializeLevelBox();
-    void initializeChangeIconDialog();
-    QVBoxLayout* setIconLayout();
-    QVBoxLayout* setLCDScoreLayout();
-    QFrame* initializeDialogArea();
     void changeIconCircle();
     void changeIconCross();
-    void updatePlayerIconLabel();
+    void initializeButtons();
+    void initializeChangeIconDialog();
+    QFrame* initializeDialogArea();
+    void initializeLevelBox();
+    void initializeWindow();
     void resetLcdScores();
+    QVBoxLayout* setIconLayout();
+    QVBoxLayout* setLCDScoreLayout();
     void setTitle(const QString &title);
+    void updatePlayerIconLabel();
 
+
+    int player_score_, computer_score_;
+    QSize widget_size_;
+    gameLevel game_level_;
 
     QLabel *title_label_;
     QLabel *comment_label_;
@@ -66,10 +69,6 @@ private:
     QDialog change_icon_dialog_;
 
     TicTacToeBoard *game_board_;
-
-    QSize original_widget_size_;
-    gameLevel game_level_;
-    int player_score_, computer_score_;
 };
 
 #endif // TICTACTOEWINDOW_H
