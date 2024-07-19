@@ -2,7 +2,10 @@
 
 TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     : QWidget{parent}
+    , change_icon_dialog_(this)
     , original_widget_size_(560, 440)
+    , player_score_(0)
+    , computer_score_(0)
 {
     // Title
     title_label_ = new QLabel("Tic Tac Toe");
@@ -11,15 +14,20 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     title_label_->setAlignment(Qt::AlignCenter);
     // title_label_->setFrameStyle(2);
 
-    // TO BE REMOVED ------
-    // // Title
-    // game_board_ = new QLabel("BOARD");
-    // game_board_->setFrameStyle(2);
-    // game_board_->setFixedSize(250, 250);
-    game_board_ = new TicTacToeBoard();
-    game_board_->setFixedSize(240, 240);
+    comment_label_ = new QLabel();
+    // As default, player start every time platform is loaded for the first time
+    updateDisplayWithText("YOU START");
 
-    // ------
+    icon_player_label_ = new QLabel();
+    lcd_player_ = new QLCDNumber(3);
+    lcd_computer_ = new QLCDNumber(3);
+
+    game_board_ = new TicTacToeBoard(nullptr,
+                                     ":/TicTacToe/Images/TicTacToe/x_icon_black.png",
+                                     ":/TicTacToe/Images/TicTacToe/o_icon_black.png"
+                                     );
+    game_board_->setCurrentIconLabel(icon_player_label_);
+    game_board_->setFixedSize(240, 240);
 
     // Level window list
     QFont fontCombo;
@@ -32,13 +40,143 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     level_combo_box_->setCurrentIndex(1);
     level_combo_box_->setMaximumWidth(70);
 
-    comment_frame_ = new QLabel();
-
     initializeButtons();
-
+    updatePlayerIconLabel();
+    initializeChangeIconDialog();
     initializeWindow();
 
     connect(go_back_button_, &QPushButton::clicked, this, &TicTacToeWindow::onGoBackButtonClicked);
+
+    connect(change_icon_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleChangeIconClicked);
+    connect(game_board_, &TicTacToeBoard::updateCommentLabel, this, &TicTacToeWindow::updateDisplayWithText);
+    connect(reset_board_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleResetBoardClicked);
+    connect(reset_board_button_, &QPushButton::clicked, game_board_, &TicTacToeBoard::handleResetBoardClicked);
+    connect(reset_score_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleResetScoreClicked);
+    connect(this, &TicTacToeWindow::iconCrossSelected, game_board_, &TicTacToeBoard::changeIconToCross);
+    connect(this, &TicTacToeWindow::iconCircleSelected, game_board_, &TicTacToeBoard::changeIconToCircle);
+    connect(level_combo_box_, &QComboBox::activated, this, &TicTacToeWindow::handleChangeLevelBox);
+    connect(game_board_, &TicTacToeBoard::gameIsOver, this, &TicTacToeWindow::handleFinishedGame);
+
+}
+
+/**
+ * @brief Handles the "Reset Score" button click event.
+ *
+ * This function resets the scores displayed on the LCD screens to their initial values.
+ */
+void TicTacToeWindow::handleResetScoreClicked(){
+    resetLcdScores();
+    // Resetting also the board
+    reset_board_button_->click();
+}
+
+/**
+ * @brief Resets the scores displayed on the LCD screens to zero.
+ *
+ * This function sets both the computer's and player's scores to zero and updates
+ * the corresponding LCD screens to display these reset scores.
+ */
+void TicTacToeWindow::resetLcdScores(){
+    qint8 zero = 0;
+    computer_score_ = zero;
+    player_score_ = zero;
+    lcd_computer_->display(zero);
+    lcd_player_->display(zero);
+}
+
+void TicTacToeWindow::handleFinishedGame(const gameState &game_state, const char &player)
+{
+    reset_board_button_->setDefault(true);
+    reset_board_button_->setText("New Game");
+
+    switch (game_state) {
+    case gameState::won:
+        if(player == game_board_->getPlayerChar()){
+            player_score_++;
+            lcd_player_->display(player_score_);
+        }else{
+            computer_score_++;
+            lcd_computer_->display(computer_score_);
+        }
+        break;
+    default:
+        break;
+    }
+
+
+}
+
+
+void TicTacToeWindow::handleChangeLevelBox()
+{
+    game_board_->setGameLevel(static_cast<gameLevel>(level_combo_box_->currentIndex()));
+    game_board_->handleResetBoardClicked();
+}
+
+
+void TicTacToeWindow::updateDisplayWithText(const QString &text)
+{
+    qDebug() << "Emit received";
+    QFont commentFont = QFont("Noto sans", 14);
+    comment_label_->setFont(commentFont);
+    comment_label_->setAlignment(Qt::AlignCenter);
+    comment_label_->setText(text);
+    comment_label_->setAlignment(Qt::AlignCenter);
+}
+
+/**
+ * @brief Updates the player icon label with the current player icon.
+ *
+ * This function converts the player's current icon to a pixmap and updates
+ * the player icon label with the scaled pixmap.
+ */
+void TicTacToeWindow::updatePlayerIconLabel(){
+    // Converting Icon to pixmap
+    QIcon iconPlayer = game_board_->getPlayerIcon();
+    QPixmap pixmap = iconPlayer.pixmap(icon_player_label_->size());
+
+    icon_player_label_->setPixmap(pixmap);
+    icon_player_label_->setScaledContents(true);
+}
+
+
+
+/**
+ * @brief Changes the player's icon to a circle ('O') and reinitializes the board.
+ *
+ * This function sets the player's icon to a circle, updates the corresponding icons,
+ * reinitializes the game board, closes the change icon dialog, and updates the player icon label.
+ */
+void TicTacToeWindow::changeIconCircle(){
+    // player_icon_char_ = 'O';
+    // player_icon_ = o_icon_;
+    // computer_icon_ = x_icon_;
+    // initializeBoard();
+    emit iconCircleSelected();
+    change_icon_dialog_.close();
+    updatePlayerIconLabel();
+}
+
+/**
+ * @brief Changes the player's icon to a cross ('X') and reinitializes the board.
+ *
+ * This function sets the player's icon to a cross, updates the corresponding icons,
+ * reinitializes the game board, closes the change icon dialog, and updates the player icon label.
+ */
+void TicTacToeWindow::changeIconCross(){
+    // player_icon_char_ = 'X';
+    // player_icon_ = x_icon_;
+    // computer_icon_ = o_icon_;
+    // initializeBoard();
+    emit iconCrossSelected();
+    change_icon_dialog_.close();
+    updatePlayerIconLabel();
+}
+
+void TicTacToeWindow::handleResetBoardClicked()
+{
+    reset_board_button_->setDefault(false);
+    reset_board_button_->setText("Reset Board");
 }
 
 QFrame* TicTacToeWindow::initializeDialogArea()
@@ -52,13 +190,17 @@ QFrame* TicTacToeWindow::initializeDialogArea()
 
     // Label for first text
     QLabel *label1 = new QLabel("Welcome to the game:");
+    // label1->setFrameStyle(2);
     label1->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     QFont label1Font = QFont("Noto sans", 11, -1, true);
     label1Font.setBold(true);
     label1->setFont(label1Font);
 
+    // comment_label_->setFrameStyle(2);
+
     outerLayout->addWidget(label1);
-    outerLayout->addWidget(comment_frame_);
+    outerLayout->addWidget(comment_label_);
+    outerLayout->setStretch(1,5);
 
     return outerFrame;
 }
@@ -94,12 +236,12 @@ QVBoxLayout* TicTacToeWindow::setIconLayout()
     youLabel->setFont(labelFont);
     youLabel->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
 
-    QLabel *iconPlayerLabel = new QLabel();
-    iconPlayerLabel->setFixedSize(32,32);
-    iconPlayerLabel->setFrameStyle(3);
+    icon_player_label_->setFixedSize(32,32);
+    // icon_player_label_->setFrameStyle(3);
+    // icon_player_label_->
 
     // HORIZONTAL LAYOUT
-    iconPLayerLayout->addWidget(iconPlayerLabel);
+    iconPLayerLayout->addWidget(icon_player_label_);
     iconPLayerLayout->setAlignment(Qt::AlignHCenter);
 
     // VERTICAL LAYOUT
@@ -115,12 +257,12 @@ QVBoxLayout* TicTacToeWindow::setLCDScoreLayout()
 {
     QVBoxLayout *LCDScoreLayout = new QVBoxLayout();
 
-    QLCDNumber *lcdPlayer = new QLCDNumber(3);
-    lcdPlayer->setFrameStyle(QFrame::Raised | QFrame::Box);
-    lcdPlayer->setFixedSize(70,50);
-    QLCDNumber *lcdComputer = new QLCDNumber(3);
-    lcdComputer->setFrameStyle(QFrame::Raised | QFrame::Box);
-    lcdComputer->setFixedSize(70,50);
+    // QLCDNumber *lcdPlayer = new QLCDNumber(3);
+    lcd_player_->setFrameStyle(QFrame::Raised | QFrame::Box);
+    lcd_player_->setFixedSize(70,50);
+    // QLCDNumber *lcdComputer = new QLCDNumber(3);
+    lcd_computer_->setFrameStyle(QFrame::Raised | QFrame::Box);
+    lcd_computer_->setFixedSize(70,50);
 
     QFont playerFont = QFont("Noto Sans", 9);
     QLabel *playerText = new QLabel("player");
@@ -138,10 +280,10 @@ QVBoxLayout* TicTacToeWindow::setLCDScoreLayout()
     VSText->setMaximumHeight(30);
 
     LCDScoreLayout->addWidget(playerText);
-    LCDScoreLayout->addWidget(lcdPlayer, 20);
+    LCDScoreLayout->addWidget(lcd_player_, 20);
     LCDScoreLayout->addWidget(VSText);
     LCDScoreLayout->setStretch(2, 0);
-    LCDScoreLayout->addWidget(lcdComputer, 20);
+    LCDScoreLayout->addWidget(lcd_computer_, 20);
     LCDScoreLayout->addWidget(computerText);
     LCDScoreLayout->setAlignment(Qt::AlignCenter);
 
@@ -252,6 +394,62 @@ void TicTacToeWindow::initializeWindow()
     setWindowTitle("Tic Tac Toe");
     resize(original_widget_size_);
 }
+
+void TicTacToeWindow::initializeChangeIconDialog()
+{
+    change_icon_dialog_.setWindowTitle("Choose your Icon");
+    change_icon_dialog_.resize(200, 100);
+
+    // Create the buttons
+    QPushButton *circle_button = new QPushButton("", &change_icon_dialog_);
+    QPushButton *cross_button = new QPushButton("", &change_icon_dialog_);
+
+    char playerChar = game_board_->getPlayerChar();
+    QIcon o_icon;// = game_board_->getComputerIcon();
+    QIcon x_icon;
+
+    if(playerChar == 'X')
+    {
+        x_icon = game_board_->getPlayerIcon();
+        o_icon = game_board_->getComputerIcon();
+    }else{
+        x_icon = game_board_->getComputerIcon();
+        o_icon = game_board_->getPlayerIcon();
+    }
+
+    // Desired button size
+    qint8 button_size = 80;
+    qint8 icon_reduction = 10;
+
+    // Styling the buttons
+    circle_button->setFixedSize(button_size, button_size);
+    circle_button->setIcon(o_icon);
+    circle_button->setIconSize(QSize(button_size - icon_reduction, button_size - icon_reduction));
+    cross_button->setFixedSize(button_size, button_size);
+    cross_button->setIcon(x_icon);
+    cross_button->setIconSize(QSize(button_size - icon_reduction, button_size - icon_reduction));
+
+    // Set up the layout for the dialog
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(circle_button);
+    layout->addWidget(cross_button);
+    change_icon_dialog_.setLayout(layout);
+
+    // Connect both buttons to signals
+    connect(circle_button, &QPushButton::clicked, this, &TicTacToeWindow::changeIconCircle);
+    connect(cross_button, &QPushButton::clicked, this, &TicTacToeWindow::changeIconCross);
+}
+
+/**
+ * @brief Handles the "Change Icon" button click event.
+ *
+ * This function displays the "Change Icon" dialog box, allowing the player to choose a new icon.
+ */
+void TicTacToeWindow::handleChangeIconClicked(){
+    // Run dialog box
+    change_icon_dialog_.exec();
+}
+
 
 /**
  * @brief Handles the "Go Back" button click event.
