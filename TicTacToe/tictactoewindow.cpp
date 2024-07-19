@@ -519,6 +519,21 @@ QVBoxLayout* TicTacToeWindow::setLCDScoreLayout()
 }
 
 /**
+ * @brief Sets the title of the TicTacToe window.
+ *
+ * This function sets the font and alignment for the title label with the specified title.
+ *
+ * @param title The title to be displayed in the TicTacToe window.
+ */
+void TicTacToeWindow::setTitle(const QString &title) {
+    // Title
+    title_label_ = new QLabel(title);
+    QFont title_font("FreeMono", 26, QFont::Bold, 1);
+    title_label_->setFont(title_font);
+    title_label_->setAlignment(Qt::AlignCenter);
+}
+
+/**
  * @brief Updates the player icon label with the current player icon.
  *
  * This function converts the player's icon to a pixmap and updates the label to display the icon.
