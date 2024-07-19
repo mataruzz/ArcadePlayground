@@ -36,12 +36,12 @@ signals:
     void botTurn();
     void updateCommentLabel(const QString &text);
     void gameIsOver(const gameState &state, const char &player);
+    void gameStarted();
 
 public slots:
     void handleResetBoardClicked();
     void changeIconToCircle();
     void changeIconToCross();
-    // void performBotAction();
 
 private slots:
     void performBotAction();
@@ -84,7 +84,6 @@ private:
     QSet<qint8> free_spots_;
 
     QIcon x_icon_, o_icon_;
-    // QIcon x_icon_won_, o_icon_won_;
     QIcon player_winning_icon_, computer_winning_icon_;
     QIcon player_icon_, computer_icon_;
 

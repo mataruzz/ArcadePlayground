@@ -31,13 +31,16 @@ private slots:
     void handleChangeIconClicked();
     void handleResetBoardClicked();
     void handleResetScoreClicked();
-    void updateDisplayWithText(const QString &text);
+    void handleUpdateCommentLabel(const QString &text);
     void handleChangeLevelBox();
     void handleFinishedGame(const gameState &game_state, const char &player);
+    void handleGameStarted();
+
 
 private:
     void initializeWindow();
     void initializeButtons();
+    void initializeLevelBox();
     void initializeChangeIconDialog();
     QVBoxLayout* setIconLayout();
     QVBoxLayout* setLCDScoreLayout();
@@ -46,6 +49,7 @@ private:
     void changeIconCross();
     void updatePlayerIconLabel();
     void resetLcdScores();
+    void setTitle(const QString &title);
 
 
     QLabel *title_label_;

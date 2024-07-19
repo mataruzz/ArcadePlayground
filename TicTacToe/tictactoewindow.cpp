@@ -7,21 +7,19 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     , player_score_(0)
     , computer_score_(0)
 {
-    // Title
-    title_label_ = new QLabel("Tic Tac Toe");
-    QFont title_font("FreeMono", 26, QFont::Bold, 1);
-    title_label_->setFont(title_font);
-    title_label_->setAlignment(Qt::AlignCenter);
-    // title_label_->setFrameStyle(2);
+    setTitle("Tic Tac Toe");
 
     comment_label_ = new QLabel();
-    // As default, player start every time platform is loaded for the first time
-    updateDisplayWithText("YOU START");
+    QFont commentFont = QFont("Noto sans", 14);
+    comment_label_->setFont(commentFont);
+    comment_label_->setAlignment(Qt::AlignCenter);
+    comment_label_->setAlignment(Qt::AlignCenter);
 
     icon_player_label_ = new QLabel();
     lcd_player_ = new QLCDNumber(3);
     lcd_computer_ = new QLCDNumber(3);
 
+    // Game board initialized, with possible to choose any image
     game_board_ = new TicTacToeBoard(nullptr,
                                      ":/TicTacToe/Images/TicTacToe/x_icon_black.png",
                                      ":/TicTacToe/Images/TicTacToe/o_icon_black.png"
@@ -29,18 +27,8 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     game_board_->setCurrentIconLabel(icon_player_label_);
     game_board_->setFixedSize(240, 240);
 
-    // Level window list
-    QFont fontCombo;
-    fontCombo.setPointSize(8);
-    level_combo_box_ = new QComboBox();
-    level_combo_box_->addItem("Easy");
-    level_combo_box_->addItem("Medium");
-    level_combo_box_->addItem("Hard");
-    level_combo_box_->setFont(fontCombo);
-    level_combo_box_->setCurrentIndex(1);
-    level_combo_box_->setMaximumWidth(70);
-
     initializeButtons();
+    initializeLevelBox();
     updatePlayerIconLabel();
     initializeChangeIconDialog();
     initializeWindow();
@@ -48,15 +36,30 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
     connect(go_back_button_, &QPushButton::clicked, this, &TicTacToeWindow::onGoBackButtonClicked);
 
     connect(change_icon_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleChangeIconClicked);
-    connect(game_board_, &TicTacToeBoard::updateCommentLabel, this, &TicTacToeWindow::updateDisplayWithText);
-    connect(reset_board_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleResetBoardClicked);
+    connect(game_board_, &TicTacToeBoard::updateCommentLabel, this, &TicTacToeWindow::handleUpdateCommentLabel);
     connect(reset_board_button_, &QPushButton::clicked, game_board_, &TicTacToeBoard::handleResetBoardClicked);
     connect(reset_score_button_, &QPushButton::clicked, this, &TicTacToeWindow::handleResetScoreClicked);
     connect(this, &TicTacToeWindow::iconCrossSelected, game_board_, &TicTacToeBoard::changeIconToCross);
     connect(this, &TicTacToeWindow::iconCircleSelected, game_board_, &TicTacToeBoard::changeIconToCircle);
     connect(level_combo_box_, &QComboBox::activated, this, &TicTacToeWindow::handleChangeLevelBox);
     connect(game_board_, &TicTacToeBoard::gameIsOver, this, &TicTacToeWindow::handleFinishedGame);
+    connect(game_board_, &TicTacToeBoard::gameStarted, this, &TicTacToeWindow::handleGameStarted);
+}
 
+void TicTacToeWindow::handleGameStarted()
+{
+    // qDebug() << "Handle game started" ;
+    reset_board_button_->setDefault(false);
+    reset_board_button_->setText("Reset Board");
+}
+
+void TicTacToeWindow::setTitle(const QString &title)
+{
+    // Title
+    title_label_ = new QLabel(title);
+    QFont title_font("FreeMono", 26, QFont::Bold, 1);
+    title_label_->setFont(title_font);
+    title_label_->setAlignment(Qt::AlignCenter);
 }
 
 /**
@@ -66,8 +69,21 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
  */
 void TicTacToeWindow::handleResetScoreClicked(){
     resetLcdScores();
-    // Resetting also the board
     reset_board_button_->click();
+}
+
+void TicTacToeWindow::initializeLevelBox()
+{
+    QFont fontCombo;
+    fontCombo.setPointSize(8);
+
+    level_combo_box_ = new QComboBox();
+    level_combo_box_->addItem("Easy");
+    level_combo_box_->addItem("Medium");
+    level_combo_box_->addItem("Hard");
+    level_combo_box_->setFont(fontCombo);
+    level_combo_box_->setCurrentIndex(1);
+    level_combo_box_->setMaximumWidth(70);
 }
 
 /**
@@ -99,29 +115,25 @@ void TicTacToeWindow::handleFinishedGame(const gameState &game_state, const char
             lcd_computer_->display(computer_score_);
         }
         break;
+    case gameState::draw:
+        comment_label_->setText("DRAW GAME");
+        break;
     default:
         break;
     }
-
-
 }
 
 
 void TicTacToeWindow::handleChangeLevelBox()
 {
     game_board_->setGameLevel(static_cast<gameLevel>(level_combo_box_->currentIndex()));
-    game_board_->handleResetBoardClicked();
 }
 
 
-void TicTacToeWindow::updateDisplayWithText(const QString &text)
+void TicTacToeWindow::handleUpdateCommentLabel(const QString &text)
 {
-    qDebug() << "Emit received";
-    QFont commentFont = QFont("Noto sans", 14);
-    comment_label_->setFont(commentFont);
-    comment_label_->setAlignment(Qt::AlignCenter);
+    // qDebug() << "Emit received";
     comment_label_->setText(text);
-    comment_label_->setAlignment(Qt::AlignCenter);
 }
 
 /**
@@ -148,10 +160,6 @@ void TicTacToeWindow::updatePlayerIconLabel(){
  * reinitializes the game board, closes the change icon dialog, and updates the player icon label.
  */
 void TicTacToeWindow::changeIconCircle(){
-    // player_icon_char_ = 'O';
-    // player_icon_ = o_icon_;
-    // computer_icon_ = x_icon_;
-    // initializeBoard();
     emit iconCircleSelected();
     change_icon_dialog_.close();
     updatePlayerIconLabel();
@@ -164,10 +172,6 @@ void TicTacToeWindow::changeIconCircle(){
  * reinitializes the game board, closes the change icon dialog, and updates the player icon label.
  */
 void TicTacToeWindow::changeIconCross(){
-    // player_icon_char_ = 'X';
-    // player_icon_ = x_icon_;
-    // computer_icon_ = o_icon_;
-    // initializeBoard();
     emit iconCrossSelected();
     change_icon_dialog_.close();
     updatePlayerIconLabel();
@@ -292,6 +296,9 @@ QVBoxLayout* TicTacToeWindow::setLCDScoreLayout()
 
 void TicTacToeWindow::initializeWindow()
 {
+    // As default, player start
+    comment_label_->setText("YOU START");
+
     QVBoxLayout *changeIconLayout = setIconLayout();
     QVBoxLayout *LCDScoreLayout = setLCDScoreLayout();
     QFrame *commentAreaFrame = initializeDialogArea();

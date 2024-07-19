@@ -19,7 +19,7 @@ TicTacToeBoard::TicTacToeBoard(QWidget *parent, const QString xIconPath, const Q
 
     // Setting default player Icon as circle and starter player
     player_icon_char_ = 'O';
-    starter_player_ = computer_icon_char_;
+    starter_player_ = player_icon_char_;
 
     initializeBoard();
 
@@ -305,8 +305,7 @@ void TicTacToeBoard::initializeBoard()
     player_icon_char_ == 'O' ? computer_icon_char_ = 'X' : computer_icon_char_ = 'O';
 
     initializeIcons();
-    // emit updateCommentFrame("YOU START")
-    // emit gameStarted() -> in order to change reset_board_button text to Reset board
+    emit gameStarted();
 
     // Resetting variables
     board_ = QVector<QVector<char>>(3, QVector<char>(3, ' '));
@@ -330,20 +329,14 @@ void TicTacToeBoard::initializeBoard()
     }
 
     // Managing different player start
-    QString text;
     if(starter_player_ == computer_icon_char_){
-        text = "BOT started";
-        qDebug() << "Bot started";
+        emit updateCommentLabel("BOT STARTED");
         emit botTurn();
         starter_player_ = player_icon_char_;
     }else{
-        text = "YOU start";
         starter_player_ = computer_icon_char_;
-        qDebug() << "YOU start";
-
+        emit updateCommentLabel("YOU START");
     }
-
-    emit updateCommentLabel(text);
 }
 
 void TicTacToeBoard::handleResetBoardClicked(){
@@ -414,7 +407,8 @@ void TicTacToeBoard::initializeIcons(){
  * marks the button with the player's icon, and checks the game state. It implements the main logic.
  */
 void TicTacToeBoard::handleBoardButtonClick(){
-    emit updateCommentLabel("");
+    if(free_spots_.size()==9)
+        emit updateCommentLabel("");
 
     QPushButton* button = qobject_cast<QPushButton*>(sender());
     int row = -1, col = -1;
@@ -468,11 +462,10 @@ void TicTacToeBoard::handleBoardButtonClick(){
 void TicTacToeBoard::handlePlayerAction(const gameState &action_result, const char player){
     switch (action_result) {
     case gameState::won:{
-        // std::cout << "WON" << std::endl;
+        // qDebug() << "WON";
 
         // Displaying text below the game
         if(player == player_icon_char_){
-            // comment_label_->setText("YOU WON :)");
             emit updateCommentLabel("YOU WON :)");
         }else{
             emit updateCommentLabel("YOU LOST :(");
@@ -492,7 +485,7 @@ void TicTacToeBoard::handlePlayerAction(const gameState &action_result, const ch
         break;
     }
     case gameState::draw:{
-        // std::cout << "DRAW" << std::endl;
+        // qDebug() << "DRAW" ;
         emit updateCommentLabel("DRAW GAME");
         grayOutBoardButtons();
         emit gameIsOver(action_result, player);
