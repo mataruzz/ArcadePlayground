@@ -46,7 +46,7 @@ TicTacToeWindow::TicTacToeWindow(QWidget *parent)
 }
 
 
-/* INITIALISAZION */
+/******* INITIALISAZION *******/
 /**
  * @brief Initializes the buttons used in the TicTacToe window.
  *
@@ -281,7 +281,7 @@ void TicTacToeWindow::initializeWindow()
     resize(widget_size_);
 }
 
-/* SLOTS */
+/******* SLOTS *******/
 /**
  * @brief Handles the event when the "Change Icon" button is clicked.
  *
@@ -388,7 +388,7 @@ void TicTacToeWindow::onGoBackButtonClicked(){
     emit goBackToMainMenu();
 }
 
-/* OTHER */
+/******* OTHER *******/
 /**
  * @brief Handles the event of changing the player icon to a circle.
  *
