@@ -4,7 +4,7 @@ Welcome to the Arcade Platform! This project is built using Qt and C++. The idea
 
 
 ## Install from source
-In case you want to build and use this project on your own machine (instead of simple playing downloading the executable), you have first to install [Qt6.7](https://doc.qt.io/qt-6/get-and-install-qt.html). Once all the environment has been set.
+In case you want to build and use this project on your own machine (instead of simple playing - downloading the executable), you have first to install [Qt6.7](https://doc.qt.io/qt-6/get-and-install-qt.html). Once all the libs have been set.
 
 1. **Clone the Repository**
    ```bash
