@@ -1,0 +1,11 @@
+# version: "3.9"
+services:
+  arcade_playground:
+    build: .
+    container_name: appimage-test
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    tty: true
