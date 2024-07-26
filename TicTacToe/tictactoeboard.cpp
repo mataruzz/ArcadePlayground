@@ -170,8 +170,9 @@ void TicTacToeBoard::botActionBasedOnLevel(){
     case gameLevel::medium:
         mediumBotAction();
         break;
-    case gameLevel::hard:
-        break;
+    // case gameLevel::hard:
+    //  hardBotAction();
+    //     break;
     default:
         mediumBotAction();
         break;
