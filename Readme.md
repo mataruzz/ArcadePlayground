@@ -2,6 +2,7 @@
 
 Welcome to the Arcade Platform! This project is built using Qt and C++. The idea of this project was mainly for me to learn the Qt library and understand its working principles. The platform hosts a variety of classic games, with the initial release featuring Tic Tac Toe and Tetris. Might include future releases including more exciting games.
 
+
 ## Install from source
 In case you want to build and use this project on your own machine (instead of simple playing downloading the executable), you have first to install [Qt6.7](https://doc.qt.io/qt-6/get-and-install-qt.html). Once all the environment has been set.
 
@@ -38,5 +39,4 @@ As reference on how the AppImage has been obtained, I used the tool [linuxdeploy
 ```
 
 
-<!-- ![Alt Text](.Images/TicTacToe/Samples/TicTacToe.gif) -->
 
