@@ -3,10 +3,10 @@
         <file>Images/TicTacToe/tic_tac_toe_game.png</file>
         <file>Images/TicTacToe/o_icon_red.png</file>
         <file>Images/TicTacToe/x_icon_red.png</file>
-        <file>Images/TicTacToe/o_icon_black.png</file>
-        <file>Images/TicTacToe/x_icon_black.png</file>
         <file>Images/TicTacToe/o_icon_green.png</file>
         <file>Images/TicTacToe/x_icon_green.png</file>
+        <file>Images/TicTacToe/o_icon_black.png</file>
+        <file>Images/TicTacToe/x_icon_black.png</file>
     </qresource>
     <qresource prefix="/Tetris">
         <file>Images/Tetris/tetris_game.png</file>

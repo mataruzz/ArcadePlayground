@@ -469,7 +469,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <string>Reset Score</string>
    </property>
    <property name="icon">
-    <iconset theme="edit-clear"/>
+    <iconset theme="emblem-important"/>
    </property>
    <property name="autoDefault">
     <bool>false</bool>
